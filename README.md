@@ -6,19 +6,19 @@ Create Time locked smart contracts where the time is sourced from a Chainlink or
 
 # Table of contents
 ---
-   * [Overview](#markdown-header-overview)
-   * [Prerequisite](#markdown-header-prerequisite)
-   * [Tools & Technologies](#markdown-header-tools-technologies)
-   * [Configuring Chainlink Job](#markdown-header-configuring-chainlink-job)
-   * [Deploying Time Locked Contracts](#markdown-header-deploying-time-locked-contracts)
-   * [Configuring the Application](#markdown-header-configuring-the-application)
-   * [Building the Application](#markdown-header-building-the-application)
-      * [Using npm](#markdown-header-using-npm)
-      * [Using Docker](#markdown-header-using-docker)
-   * [Accessing the Application](#markdown-header-accessing-the-application)
-      * [Login](#markdown-header-login)
-      * [Contracts](#markdown-header-contracts)
-      * [New Contract](#markdown-header-new-contract) 
+   * [Overview](#overview)
+   * [Prerequisite](#prerequisite)
+   * [Tools & Technologies](#tools--technologies)
+   * [Configuring Chainlink Job](#configuring-chainlink-job)
+   * [Deploying Time Locked Contracts](#deploying-time-locked-contracts)
+   * [Configuring the Application](#configuring-the-application)
+   * [Building the Application](#building-the-application)
+      * [Using npm](#using-npm)
+      * [Using Docker](#using-docker)
+   * [Accessing the Application](#accessing-the-application)
+      * [Login](#login)
+      * [Contracts](#contracts)
+      * [New Contract](#new-contract) 
       
 ## Overview
 ---
@@ -42,13 +42,13 @@ It is recommended to follow [XinFin-Chainlink](https://github.com/XinFinOrg/XinF
 
 Following tools and technologies have been usse to develop Time Locked Smart Contract application -
 
-- Node.js 12.8
-- Vue.js 4.x 
-- Bootstrap - 5.x
-- web3 / xdc3 - 1.3.x
-- XinPay - 6.0.0
-- Chainlink - 0.10.x
-- Solidity - 0.4.24
+- Node.js 12.8 - https://nodejs.org/en/
+- Vue.js 4.x - https://v3.vuejs.org/
+- Bootstrap 5.x - https://getbootstrap.com/
+- web3 / xdc3 1.3.x - https://web3js.readthedocs.io/en/v1.5.2/
+- XinPay 6.0.0 - 6.0.0 - https://chrome.google.com/webstore/detail/xinpay/bocpokimicclpaiekenaeelehdjllofo?hl=en
+- Chainlink 0.10.x - https://chain.link/
+- Solidity 0.4.24 - https://docs.soliditylang.org/en/v0.8.7/
 
 ![Design](public/design.png)
 
