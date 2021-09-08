@@ -33,6 +33,9 @@
 
 
 <script>
+/**
+ * Common header component for all screens
+ */
 export default {
   name: "Header",
 };

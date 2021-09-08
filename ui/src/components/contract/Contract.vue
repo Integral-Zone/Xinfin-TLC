@@ -198,6 +198,9 @@
 </template>
 
 <script>
+/**
+ * Component to create a new Time Locked Smart Contract
+ */
 import $ from "jquery";
 import "smartwizard/dist/css/smart_wizard_all.min.css";
 import "smartwizard/dist/js/jquery.smartWizard.min.js";
@@ -212,7 +215,19 @@ import { DatePicker } from 'v-calendar';
 
 export default {
   name: "Contact",
+  /**
+   * Extend the base component to inherit following parameters - 
+   * 
+   * NetworkId - Network selected by the user in XinPay
+   * Address - Address of the user in XDC network 
+   * XDC Balance - Total XDC balance
+   * LINK token Balance - Total LINK token balance 
+   * 
+   */
   extends: Base,
+  /**
+   * Required data parameters to create Time Locked Smart Contract
+   */
   data() {
     return {
       data: {
@@ -222,11 +237,14 @@ export default {
         link: 0.1,
         duration: 0,
         walletContractAddress: "",
-        targets: [{ xdc: 0.000001, receiver: '0x39D3A9Ac73C885EF6AE3751C06eE6616F32d3Edf' }],
+        targets: [{ xdc: 0.000001, receiver: '' }],
       },
       date: new Date(),
       contractDetails: {},
       showContractDetailsKey: 0,
+      /**
+       * TLC wizard configuration
+       */
       wizardConfig: {
         selected: 0,
         autoAdjustHeight: false,
@@ -256,9 +274,21 @@ export default {
       },
     };
   },
+  /**
+   * Action to be performed on compoment load -
+   * 
+   * 1. Initializes the wizard
+   */
   mounted() {
     this.initWizard();
   },
+  /**
+   * Required components -
+   * 
+   * 1. Ajax loader with gif
+   * 2. Contract info component, which will be displayed at the final step
+   * 3. Date picker component to choose the XDC lock up date and time
+   */
   components: {
     Loading,
     ContractInfo,
@@ -271,6 +301,9 @@ export default {
       }, 0);
     },
   },
+  /**
+   * Once the required parametsrs are retrieved, initalize the variables to edit the contract. 
+   */
   created() {
     this.$watch("isInitialized", () => {
       this.data.address = this.address;
@@ -281,6 +314,13 @@ export default {
     });
   },
   methods: {
+    /**
+     * Load existing contract details. 
+     * 
+     * 1. In case of a new contract, there would be no contract address 
+     * 2. In case of a edit contract (applicable only if LINK token is not transferrd while creating the contract initially), existing contract details will be retrieved from the appropriate network chosen in XinPay
+     * 
+     */
     async loadContract() {
       this.data.walletContractAddress = this.$route.params.contract_address
       if(!this.data.walletContractAddress) {
@@ -291,16 +331,29 @@ export default {
       
       this.progressWizard();
     },
+    /**
+     * Adds new set of fields to capture receiver and correspnding XDC to transfer
+     */
     addReceiver() {
       this.data.targets.push({ xdc: 0.000001, receiver: "" });
     },
+    /**
+     * Removes the receiver and XDC pair from  list
+     */
     removeReceiver(index) {
       this.data.targets.splice(index, 1);
     },
+    /**
+     * Initialize the contract creation wizard
+     */
     initWizard() {
       $("#create_contract").smartWizard(this.wizardConfig);
       const vm = this;
 
+      /**
+       * Callback when a wizard step is shown.
+       * This callback will be used to display the created contract details in the final step
+       */
       // eslint-disable-next-line
       $("#create_contract").on("showStep", function (e, anchorObject, stepIndex, stepDirection) {
           
@@ -313,6 +366,10 @@ export default {
         }
       );
 
+      /**
+       * Callback when user moves to a new step in the wizard
+       * 1. Validates if the form is valid i.e. if receiver's addresses are valid and certain XDC is specified 
+       */
       // eslint-disable-next-line
       $("#create_contract").on("leaveStep", function (e, anchorObject, currentStepIndex, nextStepIndex, stepDirection) {
           if (stepDirection === "backward" || vm.rpcInProgress) {
@@ -323,6 +380,10 @@ export default {
             return true;
           }
 
+        /**
+         * Function to validate if the form is valid.
+         * currentStepIndex - referes to the current step
+         */
           let isFormValid = $(`#step_form_${currentStepIndex}`)[0].reportValidity();
 
           if (!isFormValid) {
@@ -334,23 +395,42 @@ export default {
         }
       );
     },
+    /**
+     * Perform appropriate action based on the wizard step
+     */
     async initiateTransaction(step) {
       switch (step) {
         case 0:
+          /**
+           * Initial step if the wizard where the new contract would be created
+           */
           this._transferXDC();
           break;
         case 1:
+          /**
+           * Second step of the wizard where LINK token will be transferred to the contract
+           */
           this._transferLinkToken();
           break;
         default:
           console.log("Invalid Step ", step);
       }
     },
+    /**
+     * Proceed to next step of the wizard
+     */
     progressWizard() {
       $("#create_contract").smartWizard("next");
       this.rpcInProgress = false;
     },
 
+   /**
+    * Create a new contract with required details like -
+    * 
+    * 1. Receivers and corresponding XDC to be transferred 
+    * 2. XDC Lock up time
+    * 3. Total XDC to be locked up
+    */
     async _transferXDC() {
 
       var xdc = this.$web3js.utils.toWei(this.lockedupXDC + "", "ether");
@@ -362,6 +442,9 @@ export default {
         return
       }
 
+      /**
+       * Create the new contract and wait for the confirmation i.e wait till the block is created in Block Chain
+       */
       var tlw = await web3Util.transferXDC(this, this.data);
       this.rpcInProgress = true;
       const vm = this;
@@ -371,31 +454,53 @@ export default {
               vm.rpcInProgress = false;
               return;
             }
+            /**
+             * Wait till the block is created in Block Chain 
+             */
             web3Util.waitForReceipt(vm, transactionHash, async function (result) {
               if (result.error) {
+                /**
+                 * In case of any error display the appropriate error
+                 */
                 common.notifyError("Error transferring XDC to contract");
                 vm.rpcInProgress = false;
                 return;
               }
+
+              /**
+               * Retrieve the new contract address
+               */
               var wallets = await web3Util.getWallets(vm, vm.data.address);
               vm.data.walletContractAddress = wallets[wallets.length - 1];
 
+              /**
+               * Notify user with success message and progress the wizard to next step
+               */
               common.notifySuccess("XDC transferred to contract");
               vm.progressWizard();
             });
           }
         );
       }catch(err) {
+        /**
+         * In case of any error display the appropriate error
+         */
         console.log(err)
         this.rpcInProgress = false;
         common.notifyError('Error creating contract. Please check if receivers are valid')
       }
       
     },
+    /**
+     * Transfer LINK token to the contract
+     */
     async _transferLinkToken() {
       var linkRpc = await web3Util.transferLinkToken(this, this.data);
       this.rpcInProgress = true;
       const vm = this;
+       /**
+       * Transfer LINK token and wait for the confirmation i.e wait till the transaction is complete
+       */
       linkRpc.send(
         { from: this.data.address },
         function (error, transactionHash) {
@@ -404,12 +509,22 @@ export default {
             vm.rpcInProgress = false;
             return;
           }
+          /**
+           * Wait till the transaction is completed 
+           */
           web3Util.waitForReceipt(vm, transactionHash, async function (result) {
             if (result.error) {
+              /**
+               * In case of any error display the appropriate error
+               */
               common.notifyError("Error transferring LINK token to contract");
               vm.rpcInProgress = false;
               return;
             }
+
+            /**
+             * Notify user with success message and progress the wizard to next step
+             */
             common.notifySuccess("LINK token transferred to contract");
             vm.progressWizard();
           });

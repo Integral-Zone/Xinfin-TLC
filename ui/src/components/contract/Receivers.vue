@@ -47,7 +47,18 @@
 <script>
 
 export default {
+   /**
+   * Display the list of receivers and corresponding XDC.
+   * The results will be displayed in a modal as it would be cleaner to display it in a modal rather than in the data table
+   */
     name: 'Receivers',
+    /**
+     * Properties to be sent by the importing contract 
+     * 
+     * 1. List of receivers
+     * 2. Corresponding XDX allocated to each receiver
+     * 3. Is XDC released to the receivers
+     */
     props: {
         receivers: Array,
         funds: Array,

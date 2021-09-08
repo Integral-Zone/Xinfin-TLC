@@ -37,16 +37,25 @@
 
 <script>
 
+/**
+ * Component to display the contract search fileds and an action/button to create new Time Locked Contract  
+ */
 import $ from 'jquery'
 
 export default {
     name: 'SubHeader',
+     /**
+     * Required data parameters 
+     */
     data() {
         return {
             address: ''
         }
     },
     methods: {
+        /**
+         * Emits the keyed in contract address to Contracts component to load the contract details
+         */
         emitAddress() {
             let isFormValid = $(`#search_contract`)[0].reportValidity();
 

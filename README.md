@@ -25,7 +25,7 @@ Create Time locked smart contracts where the time is sourced from a Chainlink or
 Time Locked Smart Contract is a feature which allows users to send XDC payments to multiple rceivers. These conditional payments, sets the XDC aside and transfers it to receivers when the time is elapsed. 
 After the expiration time, only the intended receivers can get the locked up XDC.
 
-![Time Locked Contarct](public/time_locked_contract.png)
+![Time Locked Contarct](ui/public/time_locked_contract.png)
 
 ## Prerequisite
 ---
@@ -50,7 +50,7 @@ Following tools and technologies have been usse to develop Time Locked Smart Con
 - Chainlink 0.10.x - https://chain.link/
 - Solidity 0.4.24 - https://docs.soliditylang.org/en/v0.8.7/
 
-![Design](public/design.png)
+![Design](ui/public/design.png)
 
 ## Configuring Chainlink Job
 ---
@@ -104,6 +104,7 @@ Before building or running the application following fields values should be rep
 
 - For local development, run the below command from project root directory and access the application using http://localhost:3000 
     ```sh
+    npm install
     npm run serve -- --port 3000
     ```
 
@@ -128,7 +129,7 @@ docker run -p 8080:8080 tlc
 - Make sure the address added in XinPay has sufficient XDC based on the network being used.
 - Add the Link token address in XinPay wallet and make sure there is sufficient LINK balance.
 
-![Login](public/login.png)
+![Login](ui/public/login.png)
 
 ### Contracts
 ---
@@ -150,7 +151,7 @@ User will be provided with following actions based on the contract status -
 | Transfer Link Token | This option will be available only if LINK token is not transferred to the contract. Using this option LINK token can be transferred to the contract to initiate the Chainlink job  |
 | Withdraw Contract | This option will be available only if LINK token is not transferred and when contract is not initiated. Using this option user can withdraw the total allocated XDC back to wallet|
 
-![Contracts](public/contracts.png)
+![Contracts](ui/public/contracts.png)
 
 ### New Contract
 ---
@@ -159,7 +160,7 @@ Creating Time Locked Contract is a 2 step process, which includes -
 - Creating a new Contract 
 - Transferring the LINK token and initiating Alarm Job in Chainlink
 
-![New Contract](public/new_contract.png)
+![New Contract](ui/public/new_contract.png)
 
 ##### Creating a new Contract 
 

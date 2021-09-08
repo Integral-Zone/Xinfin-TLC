@@ -23,6 +23,10 @@
 
 <script>
 
+/**
+ * Component to display the list of contracts created by the logged in user along with 
+ * the functionality to search for a contract based on address
+ */
 import Loading from 'vue-loading-overlay';
 
 import SubHeader from './SubHeader.vue';
@@ -32,7 +36,19 @@ import Base from '@/components/common/Base'
 
 export default {
     name: 'Contracts',
+    /**
+     * Extend the base component to inherit following parameters - 
+     * 
+     * NetworkId - Network selected by the user in XinPay
+     * Address - Address of the user in XDC network 
+     * XDC Balance - Total XDC balance
+     * LINK token Balance - Total LINK token balance 
+     * 
+     */
     extends: Base,
+     /**
+     * Required data parameters to display the contracts list
+     */
     data() {
         return {
             contractAddress: '',
@@ -40,6 +56,14 @@ export default {
             listKey: 0
         }
     },
+   /**
+     * Required components -
+     * 
+     * 1. Component to display the fields required for searching a new contarct
+     * 2. Component to display the list of contracts created by the logged in user
+     * 3. Ajax loader with gif
+     * 4. Contract info component, which will be displayed at the final step
+     */
     components: {
         SubHeader,
         ContractsList,
@@ -47,9 +71,17 @@ export default {
         ContractInfo
     },
     methods: {
+      /**
+       * Reload table rows once if any action is performed (only if LINK token is not transferred) i.e
+       * 1. Either transferring link token
+       * 2. Or Withdrawing the contract  
+       */
       reloadTable() {
           this.listKey +=1 
       },
+      /**
+       * Load the contract details being searched
+       */
       async searchAddress(contractAddr) {
           this.contractAddress = contractAddr
           this.contractInfoKey+=1

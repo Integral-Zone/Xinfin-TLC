@@ -1,3 +1,7 @@
+/**
+ * Main js file with required imports.
+ * Initialized global web3 variable  
+ */
 import { createApp } from 'vue'
 import App from './App.vue'
 import Web3 from 'xdc3'
@@ -19,8 +23,14 @@ import "noty/lib/noty.css";
 import "noty/lib/themes/metroui.css";
 import {LOADER_COLOR} from '@/assets/js/config.js'
 
+/**
+ * Created the application
+ */
 const app = createApp(App)
 
+/**
+ * Initializes the router
+ */
 app.use(router)
 
 app.mount('#app')

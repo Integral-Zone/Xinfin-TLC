@@ -67,6 +67,9 @@
 
 <script>
 
+/**
+ * Component to display Time Locked Smart Contract information 
+ */
 import web3Util from '@/assets/js/web3-utility'
 import Loading from 'vue-loading-overlay';
 
@@ -77,39 +80,69 @@ import ContractStatus from './ContractStatus'
 export default {
     
     name: 'ContractInfo',
+    /**
+     * Required data parameters to display the contract list
+     */
     data() {
         return {
             rpcInProgress: false,
             contractDetails: {}
         }
     },
+    /**
+     * Properties to be sent by the importing contract 
+     * 
+     * walletContractAddress - Address of the smart contract contract 
+     * address - Address of the user
+     * networkId - Current network id selected in XinPay
+     */
     props: {
         walletContractAddress: String,
         address: String,
         networkId: Number
     },
+    /**
+    * Required components -
+    * 
+    * 1. Ajax loader with gif
+    * 2. Contract status component, which displays the status of contract 
+    */
     components: {
         Loading,
         ContractStatus
     },
+     /**
+     * Action to be performed on compoment load -
+     * 
+     * 1. Retrieves the contract details and displays the same
+     */
     mounted() {
         if(this.walletContractAddress && this.address) {
             this.showContractDetails()
         }
     },
     methods: {
+        /**
+         * Retrieves the contract details and displays the same
+         */
         async showContractDetails() {
             this.rpcInProgress = true
             let details = await web3Util.getContractDetails(this, this.address, this.walletContractAddress)
             this.contractDetails = details
             this.rpcInProgress = false
       },
+      /**
+       * Function to shorten the receivers address. This is just to declutter UI from long addresses  
+       */
       shortenReceiver(addr) {
           if(!addr) {
               return
           }
           return `${addr.substring(0,5)}....${addr.substring(addr.length-7,addr.length)}`
       },
+      /**
+       * Function to copy the receiver's address to clipboard
+       */
       async copyToClipboard(text) {
             const { toClipboard } = useClipboard()
             await toClipboard(text)

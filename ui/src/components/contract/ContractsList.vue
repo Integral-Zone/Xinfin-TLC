@@ -62,6 +62,13 @@
 
 <script>
 
+/**
+ * Component to display the list of contracts created by the logged in user. Provides following actions for each contract only if LINK token is not transferred - 
+ * 
+ * 1. Transfer LINK token 
+ * 2. Withdraw Contract or XDC from contract
+ * 
+ */
 import $ from 'jquery'
 import web3Util from '@/assets/js/web3-utility'
 import Loading from 'vue-loading-overlay';
@@ -74,6 +81,9 @@ import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 export default {
     name: 'ContractsList',
+     /**
+     * Required data parameters to display list of contracts
+     */
     data() {
         return {
             wallets: [],
@@ -90,13 +100,32 @@ export default {
             contractDetails: {}
         }
     },
+    /**
+     * Action to be performed on compoment load -
+     * 
+     * 1. Retrieves the contracts created by logged in user
+     */
     mounted() {
         this.load()    
     },
+    /**
+     * Properties to be sent by the importing contract 
+     * 
+     * address - Address of the user
+     * networkId - Current network id selected in XinPay
+     */
     props: {
         address: String,
         networkId: Number
     },
+     /**
+     * Required components -
+     * 
+     * 1. Ajax loader with gif
+     * 2. Receivers modal component - to display the list of receivers and corresponding XDC
+     * 3. Contract status component - displays the status of contract 
+     * 4. Withdraw component modal - a confirmation modal 
+     */
     components: {
         Loading,
         Receivers,
@@ -104,6 +133,9 @@ export default {
         WithdrawContract
     },
     methods: {
+        /**
+         * Function to initialize the datable with appropriate sort, search and pagination settings
+         */
         initDataTable() {
             this.datatable = $('#contracts').DataTable({
                 "aoColumns": [
@@ -126,14 +158,24 @@ export default {
         updateContract() {
             this.$emit('recordUpdated')
         },
+        /**
+         * 1. Load the list of contracts created by logged in user 
+         * 2. For each contract address retrieve the contract details (i.e. receivers and corresponding XDC, total LINK tokens etc)
+         */
         async load() {
             this.initDataTable()
             await this.getContracts()
             this.getContractDetails()
         },
+        /**
+         * Load the list of contracts created by logged in user 
+         */
         async getContracts() {
             this.wallets = await web3Util.getWallets(this, this.address)
         },
+        /**
+         * Load the contract details for each contarct (i.e. receivers and corresponding XDC, total LINK tokens etc)
+         */
         async getContractDetails() {
             this.rpcInProgress = true
             let contractDetails = []
@@ -150,11 +192,17 @@ export default {
             }
 
             for(let i=(start-1); i >= end ;i--) {
+                /**
+                 * Retrieves the contract details for specified address
+                 */
                 let contractDetail = await web3Util.getContractDetails(this, this.address, this.wallets[i])
                 contractDetail.walletAddress = this.wallets[i]
                 contractDetails.push(contractDetail)
             }
 
+            /**
+             * Destroy the datatable, append additional rows retrieved and reload data table
+             */
             $('#contracts').DataTable().destroy()
             this.contracts.push(...contractDetails)
             let vm = this
@@ -163,10 +211,18 @@ export default {
             }, 1000)
             this.rpcInProgress = false
         },
+        /**
+         * Load additional recoreds into the data table
+         */
         async loadMore() {
             this.size += this.records
             this.getContractDetails()
         },
+
+        /**
+         * Function to withdraw XDC from contract to user's wallet.
+         * This option will be applicable only if LINK token is not transferred to the contract
+         */
         withdrawContract(contractDetail, index) {
             this.contractDetails = contractDetail
             this.index = index
@@ -175,6 +231,10 @@ export default {
                 myModal.show()
             }, 500)
         },
+        /**
+         * Display the list of receivers and corresponding XDC.
+         * The results will be displayed in a modal as it would be cleaner to display it in a modal rather than in the data table
+         */
         showReceivers(receivers, funds, isReleased) {
             this.receivers = receivers
             this.funds = funds

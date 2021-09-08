@@ -32,12 +32,31 @@
 
 <script>
 
+/**
+ * Component to display the Time Locked Smart Contract use case flow along with -
+ * 1. User's current XDC balance based on the network selected in XinPay
+ * 2. User's current LINK token balance based on the network selected in XinPay
+ */
 import Loading from 'vue-loading-overlay';
 import Base from '@/components/common/Base'
 
 export default {
     name: 'Home',
+  /**
+   * Extend the base component to inherit following parameters - 
+   * 
+   * NetworkId - Network selected by the user in XinPay
+   * Address - Address of the user in XDC network 
+   * XDC Balance - Total XDC balance
+   * LINK token Balance - Total LINK token balance 
+   * 
+   */
     extends: Base,
+     /**
+     * Required components -
+     * 
+     * 1. Ajax loader with gif
+     */
     components: {
         Loading
     }

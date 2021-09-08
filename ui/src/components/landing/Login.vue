@@ -28,6 +28,10 @@
 
 <script>
 
+/**
+ * Component to display the login screen with XinPay installation instructions.
+ * This screen will be displayed only if either XinPay is not installed or if the user has not logged into XinPay 
+ */
 export default {
     name: 'Login'
 }

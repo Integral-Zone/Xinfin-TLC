@@ -1,3 +1,6 @@
+/**
+ * Router file to load appropriate components based on the uri/path being accessed
+ */
 import { createRouter, createWebHistory } from 'vue-router'
 import Web3 from 'xdc3'
 
@@ -6,6 +9,9 @@ import Contract from '@/components/contract/Contract.vue';
 import Login from '@/components/landing/Login.vue';
 import Home from '@/components/landing/Home.vue';
 
+/**
+ * Available paths/uri's in the application
+ */
 const routes = [
     { path: '/contracts', component: Contracts },
     { path: '/contract', component: Contract },
@@ -15,11 +21,16 @@ const routes = [
 ];
 
 const router = createRouter({
-    // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
+    // Provide the history implementation to use. We are using the hash history for simplicity here.
     history: createWebHistory(),
     routes, // short for `routes: routes`
 });
 
+
+/**
+ * Validate if user is loggedin to XinPay before accessing any of the application pages
+ * If user has not logged into XinPay or has not installed XinPay wallet page would be automatically redirected to /login
+ */
 // eslint-disable-next-line
 router.beforeEach(async (to, from) => {
 
