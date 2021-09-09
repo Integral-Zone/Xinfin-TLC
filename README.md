@@ -87,7 +87,7 @@ By the end of this step we should have following addresses -
 ## Configuring the Application
 --
 
-Before building or running the application following fields values should be replaced in **src/assets/js/config.js**.
+Before building or running the application following fields values should be replaced in **ui/src/assets/js/config.js**.
 
 **NOTE**: Network id **51** refers to XinFin Apothem network and **50** refers to XinFin Main network
 
