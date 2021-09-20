@@ -76,7 +76,7 @@ async function transferXDC(vm, config) {
        /**
         * Convert the value in XDC to wei
         */
-       funds.push(parseInt(vm.$web3js.utils.toWei(target.xdc+'', 'ether')))
+       funds.push(parseInt(vm.$web3js.utils.toWei(target.xdc+'', 'ether'))+'')
     }
     return await tlwFactoryContract.methods.newTimeLockedContract(receivers, funds, getNetworkConfig(vm).ORACLE_CONTRACT_ADDR, vm.$web3js.utils.fromAscii(getNetworkConfig(vm).CHAIN_LINK_JOB_ID), getNetworkConfig(vm).LINK_TOKEN_CONTRACT_ADDR, getNetworkConfig(vm).CHAIN_LINK_FEE+'', config.duration);
   }catch(err) {

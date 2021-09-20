@@ -19,11 +19,11 @@ const NETWORK_CONFIGURATIONS = {
         /**
          * Contract addres of Oracle contract. Refer contracts/Oracle.sol for more info
          */
-        ORACLE_CONTRACT_ADDR: '0xc60Fe49B383Db931D0Ef68Cf1A9aAe7912fAcbd0',
+        ORACLE_CONTRACT_ADDR: '0xd68Fe18D76d4a9D821E0F2905Fcde651373A72f7',
         /**
          * Job Id created in Chainlink node. Job definition available at chainlink/alarm-job.json
          */
-        CHAIN_LINK_JOB_ID: '97bccb8bdc384b88961955f493efe012',
+        CHAIN_LINK_JOB_ID: '5b601140faab4fbc968ce8f848b56720',
         /**
          * Fee charged by Oracle contract to trigger the Chainlink job. Value is 0.1 LINK 
          */
