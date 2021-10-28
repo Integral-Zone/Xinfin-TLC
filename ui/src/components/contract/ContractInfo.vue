@@ -4,7 +4,7 @@
                 <div class="d-flex border p-2  border-start-0 border-end-0">
                     <i class="bi bi-ui-radios info-icon"></i>
                     <div class="info-text-area">
-                        <p class="mb-0 info-header"><strong>TIME LOCKED CONTRACT ADDR</strong></p>
+                        <p class="mb-0 info-header"><strong>XDC SMART LOCK ADDR</strong></p>
                         <p class="mb-0 info-value"><strong>{{contractDetails.unlockDate ? (walletContractAddress || '--') : 'NOT FOUND'}} </strong></p>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
 <script>
 
 /**
- * Component to display Time Locked Smart Contract information 
+ * Component to display XDC Smart Lock information 
  */
 import web3Util from '@/assets/js/web3-utility'
 import Loading from 'vue-loading-overlay';
@@ -94,7 +94,7 @@ export default {
      * 
      * walletContractAddress - Address of the smart contract contract 
      * address - Address of the user
-     * networkId - Current network id selected in XinPay
+     * networkId - Current network id selected in XDCPay
      */
     props: {
         walletContractAddress: String,

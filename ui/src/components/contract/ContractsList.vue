@@ -6,14 +6,14 @@
      <h6 class="display-7">Recent Contracts</h6>
   </blockquote>
   <figcaption class="blockquote-footer">
-     Most recent time locked contracts created from your address <b>{{address}}</b>
+     Most recent Smart Locks created from your address <b>{{address}}</b>
   </figcaption>
 </figure>
 </div>
     <table id="contracts" class="table table-striped dt-responsive ">
         <thead>
             <tr>
-                <th>Contract Address</th>
+                <th>Smart Lock Address</th>
                 <th>XDC</th>
                 <th>Created Date</th>
                 <th>Unlock Date</th>
@@ -112,7 +112,7 @@ export default {
      * Properties to be sent by the importing contract 
      * 
      * address - Address of the user
-     * networkId - Current network id selected in XinPay
+     * networkId - Current network id selected in XDCPay
      */
     props: {
         address: String,

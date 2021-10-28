@@ -28,8 +28,8 @@ const router = createRouter({
 
 
 /**
- * Validate if user is loggedin to XinPay before accessing any of the application pages
- * If user has not logged into XinPay or has not installed XinPay wallet page would be automatically redirected to /login
+ * Validate if user is loggedin to XDCPay before accessing any of the application pages
+ * If user has not logged into XDCPay or has not installed XDCPay wallet page would be automatically redirected to /login
  */
 // eslint-disable-next-line
 router.beforeEach(async (to, from) => {

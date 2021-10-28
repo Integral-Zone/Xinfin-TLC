@@ -23,7 +23,7 @@
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link menu-font" href="/contracts">Contracts</a>
+            <a class="nav-link menu-font" href="/contracts">Smart Locks</a>
           </li>
         </ul>
       </div>

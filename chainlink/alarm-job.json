@@ -3,10 +3,10 @@
         {
             "type":"external",
             "params":{
-			   "name": "xdcnew",
+			   "name": "xdc",
                "body": {
 				  "endpoint": "xinfin-testnet",
-				  "addresses": ["0xc60Fe49B383Db931D0Ef68Cf1A9aAe7912fAcbd0"]
+				  "addresses": ["0x84f64c5ac6ebb7b2caaaa479050139650b922453"]
 				}
             }
         }

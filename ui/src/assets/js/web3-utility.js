@@ -4,10 +4,10 @@ import common from '@/assets/js/common'
 import {getNetworkConfig} from '@/assets/js/config'
 
 /**
- * Get the address from XinPay wallet
+ * Get the address from XDCPay wallet
  * 
  * @param {*} vm - Component with web3 instance
- * @returns - Address from XinPay wallet
+ * @returns - Address from XDCPay wallet
  */
 async function getAddress(vm) {
     const accounts = await vm.$web3js.eth.getAccounts();
@@ -59,12 +59,12 @@ async function getLINKBalance(vm, addr) {
 }
 
 /**
- * Method to prepare and retrieve Time locked Wallet factory's newTimeLockedContract method instance
+ * Method to prepare and retrieve XDC Smart Lock factory's newTimeLockedContract method instance
  * 
  * @param {*} vm - Component with web3 instance
  * @param {*} config - Receivers and corresponding funds
  * 
- * @returns - Time locked Wallet factory's newTimeLockedContract method instance, which will be used to create a new contract/wallet and transfer XDC
+ * @returns - XDC Smart Lock factory's newTimeLockedContract method instance, which will be used to create a new contract/wallet and transfer XDC
  */
 async function transferXDC(vm, config) {
   try {
@@ -87,7 +87,7 @@ async function transferXDC(vm, config) {
 }
 
 /**
- * Method to initiate Time Locked Contract, which inturn triggers the respective job in Chainlink oracle node
+ * Method to initiate XDC Smart Lock, which inturn triggers the respective job in Chainlink oracle node
  * 
  * @param {*} vm - Component with web3 instance
  * @param {*} config - Lockup Duration 
@@ -125,7 +125,7 @@ async function withdrawConract(vm, walletAddress) {
  * Once the link token is transferred,  
  * 
  * @param {*} vm - Component with web3 instance
- * @param {*} config - Timelocked wallet contract address, LINK token value
+ * @param {*} config - XDC Smart Lock contract address, LINK token value
  * 
  * @returns - Execution status 
  */
@@ -142,12 +142,12 @@ async function transferLinkToken(vm, config) {
 }
 
 /**
- * Retrieve all the Timelocked contracts created by the specified address
+ * Retrieve all the XDC Smart Lock contracts created by the specified address
  * 
  * @param {*} vm - Component with web3 instance
  * @param {*} addr - Address of the contract creator
  * 
- * @returns - List of Timelocked contracts created by the specified address
+ * @returns - List of XDC Smart Lock contracts created by the specified address
  */
 async function getWallets(vm, addr) {
   try{
@@ -191,16 +191,16 @@ async function waitForReceipt(vm, hash, cb) {
 
 
 /**
- * Retrieves the Time Locked Contract details for the specified contract address
+ * Retrieves the XDC Smart Lock Contract details for the specified contract address
  * 
  * @param {*} vm - Component with web3 instance
  * @param {*} address - Address from which the call is being made
- * @param {*} walletAddress - Timelocked contract address
+ * @param {*} walletAddress - XDC Smart Lock contract address
  * 
  * @returns -
  * - Receivers 
  * - Alloted XDC against each receiver
- * - Sender / Creator of Timelocked contract
+ * - Sender / Creator of XDC Smart Lock contract
  * - Contract creation date
  * - XDC release date
  * - Total XDC alloted to transfer
@@ -236,7 +236,7 @@ async function getContractDetails(vm, address, walletAddress) {
   }catch(err) {
     console.log(err)
     vm.rpcInProgress = false
-    common.notifyError('Invalid time locked smart contract')
+    common.notifyError('Invalid XDC Smart Lock contract')
   }
 }
 

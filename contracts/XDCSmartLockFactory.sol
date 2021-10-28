@@ -1,14 +1,14 @@
 pragma solidity ^0.4.24;
 
-import "./TimeLockedContract.sol";
+import "./XDCSmartLock.sol";
 
 /**
  * 
- * TimeLockedContractFactory is the factory contract which deploy's TimeLockedWallet contract.
- * Once the TimeLockedWallet contract is deployed, the corresponding contract address will be stored against the user (msg.sender)
+ * XDCSmartLockFactory is the factory contract which deploy's XDCSmartLock contract.
+ * Once the XDCSmartLock contract is deployed, the corresponding contract address will be stored against the user (msg.sender)
  * 
  **/
-contract TimeLockedContractFactory {
+contract XDCSmartLockFactory {
     
     /**
      * 
@@ -37,7 +37,7 @@ contract TimeLockedContractFactory {
     
     /**
      *
-     * Creates TimeLockedContract with the given parameters and stores the created contract
+     * Creates XDCSmartLock with the given parameters and stores the created contract
      * address against the sender 
      * 
      * -: receivers - List of receivers to whom the XDC will be transferrd to
@@ -51,9 +51,9 @@ contract TimeLockedContractFactory {
      **/
     function newTimeLockedContract(address[] receivers, uint256[] funds, address oracleContractAddr, bytes32 jobId, address link, uint256 linkFee, uint256 durationInSeconds) payable public  {
         /**
-         * Create a new TimeLockedContract with specified parameters
+         * Create a new XDCSmartLock with specified parameters
          **/
-        TimeLockedContract wallet = new TimeLockedContract(msg.sender, receivers, funds, oracleContractAddr, jobId, link, msg.value, linkFee, durationInSeconds);
+        XDCSmartLock wallet = new XDCSmartLock(msg.sender, receivers, funds, oracleContractAddr, jobId, link, msg.value, linkFee, durationInSeconds);
         
         /**
          * Add the contract address to sender's list 

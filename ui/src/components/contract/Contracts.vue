@@ -39,7 +39,7 @@ export default {
     /**
      * Extend the base component to inherit following parameters - 
      * 
-     * NetworkId - Network selected by the user in XinPay
+     * NetworkId - Network selected by the user in XDCPay
      * Address - Address of the user in XDC network 
      * XDC Balance - Total XDC balance
      * LINK token Balance - Total LINK token balance 

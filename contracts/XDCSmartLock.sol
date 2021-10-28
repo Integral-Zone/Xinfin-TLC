@@ -15,9 +15,9 @@ import "https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src
 
 /**
  *
- * Contract to implement Time Locked Contracts using Chainlink Oracle.
+ * Contract to implement XDC Smart Lock using Chainlink Oracle.
  * Appropriate Job should be created in Chinlink using the Alarm Clock task. Refer https://docs.chain.link/docs/chainlink-alarm-clock/ for more information on Chainlink Alarm Clock.
- * This contract will be created by TimeLockedContractFactory and the corresponding contract address will be stored in the Factory against the creator
+ * This contract will be created by XDCSmartLockFactory and the corresponding contract address will be stored in the Factory against the creator
  * 
  * Scenario -
  * 
@@ -29,7 +29,7 @@ import "https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src
  * 5. Once the callback function is invoked, locked up XDC will be released to all receipients mentioned in the contract 
  * 
  **/
-contract TimeLockedContract is ChainlinkClient {
+contract XDCSmartLock is ChainlinkClient {
     
     event Received(address from, uint256 amount);
     event Released(address receiver, uint256 amount);
@@ -64,7 +64,7 @@ contract TimeLockedContract is ChainlinkClient {
     uint256 private _linkFee;
     
      /**
-      * Constructor to set the initial values in the contract. Constructor will be invoked by TimeLockedContractFactory
+      * Constructor to set the initial values in the contract. Constructor will be invoked by XDCSmartLockFactory
       * 
       * params -
       * 
@@ -87,7 +87,7 @@ contract TimeLockedContract is ChainlinkClient {
         setChainlinkToken(link);
         
         /**
-         * Set all the values in time locked contract 
+         * Set all the values in XDC Smart Lock
          **/
         _sender = sender;
         _createdDate = now;

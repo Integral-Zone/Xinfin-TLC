@@ -55,7 +55,7 @@ export default {
      * Properties to be sent by the importing contract 
      * 
      * 1. Contract details
-     * 2. Network id selected in XinPay walet
+     * 2. Network id selected in XDCPay walet
      * 3. Address of the user
      */
     props: {

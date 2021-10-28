@@ -9,7 +9,7 @@ import web3Util from '@/assets/js/web3-utility'
 /**
  * Base component inherited other components which retrieves following user information -
  *
- * NetworkId - Network selected by the user in XinPay
+ * NetworkId - Network selected by the user in XDCPay
  * Address - Address of the user in XDC network 
  * XDC Balance - Total XDC balance
  * LINK token Balance - Total LINK token balance
@@ -27,7 +27,7 @@ export default {
         }
     },
     /**
-     * Retrieves all the required parameters form XinPay wallet 
+     * Retrieves all the required parameters form XDCPay wallet 
      */
     async mounted() {
         this.rpcInProgress = true

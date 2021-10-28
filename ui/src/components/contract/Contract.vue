@@ -2,7 +2,7 @@
   <div class="container text-center header-ov pt-4 pb-3">
     <figure>
       <blockquote class="blockquote">
-        <h6 class="display-7">Create Time Locked Smart Contract</h6>
+        <h6 class="display-7">Create XDC Smart Lock</h6>
       </blockquote>
       <figcaption class="blockquote-footer">
         Specify an amount of XDC to be locked up, a date and time at which the
@@ -31,7 +31,7 @@
             <form id="step_form_0">
               <!-- <div class="row">
               <div class="col text-center text-white pb-4">
-                <small> Amount of XDC to transfer to Time Locked Smart Contract from your account. Once the time is elapsed, XDC will be transferred back to receiver's address. </small>
+                <small> Amount of XDC to transfer to XDC Smart Lock from your account. Once the time is elapsed, XDC will be transferred back to receiver's address. </small>
               </div>
             </div> -->
               <div class="row">
@@ -160,7 +160,7 @@
                   </div>
                   <h6 class="text-white text-center mt-3 fs-6">
                     ** Total of <b>{{ lockedupXDC }}</b> XDC will be locked up
-                    in time locked smart contract. Click on proceed to transfer
+                    in XDC Smar Lock contract. Click on proceed to transfer
                     XDC
                   </h6>
                 </div>
@@ -174,7 +174,7 @@
                 <div class=".d-none .d-md-block .d-lg-none col-md-2"></div>
                 <div class="col-sm-12 col-md-8 text-center">
                   <label class="form-label contract-inp-header">Transfer LINK token to initiate the Chainlink job. Your current balance is <b>{{ data.linkBalance }} LINK </b>.</label>
-                  <label class="form-label contract-inp-header">By proceeding <b>0.1 LINK</b> token will be transferred to the Time Locked Contract at address <b>{{data.walletContractAddress}}</b>.</label>
+                  <label class="form-label contract-inp-header">By proceeding <b>0.1 LINK</b> token will be transferred to the XDC Smart Lock at address <b>{{data.walletContractAddress}}</b>.</label>
                 </div>
                 <div class=".d-none .d-md-block .d-lg-none col-md-2"></div>
               </div>
@@ -218,7 +218,7 @@ export default {
   /**
    * Extend the base component to inherit following parameters - 
    * 
-   * NetworkId - Network selected by the user in XinPay
+   * NetworkId - Network selected by the user in XDCPay
    * Address - Address of the user in XDC network 
    * XDC Balance - Total XDC balance
    * LINK token Balance - Total LINK token balance 
@@ -226,7 +226,7 @@ export default {
    */
   extends: Base,
   /**
-   * Required data parameters to create Time Locked Smart Contract
+   * Required data parameters to create XDC Smart Lock
    */
   data() {
     return {
@@ -318,7 +318,7 @@ export default {
      * Load existing contract details. 
      * 
      * 1. In case of a new contract, there would be no contract address 
-     * 2. In case of a edit contract (applicable only if LINK token is not transferrd while creating the contract initially), existing contract details will be retrieved from the appropriate network chosen in XinPay
+     * 2. In case of a edit contract (applicable only if LINK token is not transferrd while creating the contract initially), existing contract details will be retrieved from the appropriate network chosen in XDCPay
      * 
      */
     async loadContract() {

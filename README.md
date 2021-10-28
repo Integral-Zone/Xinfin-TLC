@@ -1,8 +1,8 @@
 [![](https://explorer.xinfin.network/img/xdc-logo.png)](https://xinfin.org/)
 
-# Time Locked Smart Contarct
+# XDC Smart Lock
 ---
-Create Time locked smart contracts where the time is sourced from a Chainlink oracle.  A user would specify an amount of XDC to be locked up, a date and time at which the locked XDC will be released, and an address for the released XDC to be sent to.
+Create XDC Smart Lock where the time is sourced from a Chainlink oracle.  A user would specify an amount of XDC to be locked up, a date and time at which the locked XDC will be released, and an address for the released XDC to be sent to.
 
 # Table of contents
 ---
@@ -10,7 +10,7 @@ Create Time locked smart contracts where the time is sourced from a Chainlink or
    * [Prerequisite](#prerequisite)
    * [Tools & Technologies](#tools--technologies)
    * [Configuring Chainlink Job](#configuring-chainlink-job)
-   * [Deploying Time Locked Contracts](#deploying-time-locked-contracts)
+   * [Deploying XDC Smart Lock](#deploying-time-locked-contracts)
    * [Configuring the Application](#configuring-the-application)
    * [Building the Application](#building-the-application)
       * [Using npm](#using-npm)
@@ -22,10 +22,10 @@ Create Time locked smart contracts where the time is sourced from a Chainlink or
       
 ## Overview
 ---
-Time Locked Smart Contract is a feature which allows users to send XDC payments to multiple rceivers. These conditional payments, sets the XDC aside and transfers it to receivers when the time is elapsed. 
+XDC Smart Lock is a feature which allows users to send XDC payments to multiple rceivers. These conditional payments, sets the XDC aside and transfers it to receivers when the time is elapsed. 
 After the expiration time, only the intended receivers can get the locked up XDC.
 
-![Time Locked Contarct](ui/public/time_locked_contract.png)
+![XDC Smart Lock](ui/public/xdc_smart_lock_overview.png)
 
 ## Prerequisite
 ---
@@ -40,13 +40,13 @@ It is recommended to follow [XinFin-Chainlink](https://github.com/XinFinOrg/XinF
 ## Tools & Technologies
 ---
 
-Following tools and technologies have been usse to develop Time Locked Smart Contract application -
+Following tools and technologies have been usse to develop XDC Smart Lock application -
 
 - Node.js 12.8 - https://nodejs.org/en/
 - Vue.js 4.x - https://v3.vuejs.org/
 - Bootstrap 5.x - https://getbootstrap.com/
 - web3 / xdc3 1.3.x - https://web3js.readthedocs.io/en/v1.5.2/
-- XinPay 6.0.0 - 6.0.0 - https://chrome.google.com/webstore/detail/xinpay/bocpokimicclpaiekenaeelehdjllofo?hl=en
+- XDCPay 6.0.0 - 6.0.0 - https://chrome.google.com/webstore/detail/XDCPay/bocpokimicclpaiekenaeelehdjllofo?hl=en
 - Chainlink 0.10.x - https://chain.link/
 - Solidity 0.4.24 - https://docs.soliditylang.org/en/v0.8.7/
 
@@ -63,22 +63,22 @@ Create an [Alarm Job](https://docs.chain.link/docs/chainlink-alarm-clock/) in Ch
 - Paste the contents into the **Json Spec** field and create the job 
 - Copy the newly created job id which we will be using later
 
-## Deploying Time Locked Contracts
+## Deploying XDC Smart Lock
 ---
-Compile and deploy the contracts required for Time Locked Smart Contract creation using [remix](https://remix.xinfin.network/) editor.
+Compile and deploy the contracts required for XDC Smart Lock creation using [remix](https://remix.xinfin.network/) editor.
 
-- **contracts/TimeLockedContractFactory.sol** - Factory contract used to create Time Locked Contracts and tracks all the contracts created by users. 
-- **contracts/TimeLockedContract.sol** - Contract implementing ChainlinkClient which is responsible for initiating Alarm Job in Chainlink and implements the callback function which will be invoked on time expiry. Stores all the information related to the contract which includes - 
+- **contracts/XDCSmartLockFactory.sol** - Factory contract used to create XDC Smart Lock and tracks all the contracts created by users. 
+- **contracts/XDCSmartLock.sol** - Contract implementing ChainlinkClient which is responsible for initiating Alarm Job in Chainlink and implements the callback function which will be invoked on time expiry. Stores all the information related to the contract which includes - 
   - Receivers and corresponding XDC to be locked up
   - Unlock date
 
-Deploy the **TimeLockedContractFactory** using [remix](https://remix.xinfin.network/) editor and take a note of the deployed contract address which we will be using later. 
+Deploy the **XDCSmartLockFactory** using [remix](https://remix.xinfin.network/) editor and take a note of the deployed contract address which we will be using later. 
 
 By the end of this step we should have following addresses - 
 
 | Keyword | Description |
 | ------ | ------ |
-| **TLW_FACTORY_CONTRACT_ADDR** | Address of the deployed Time Locked Contract Factory |
+| **TLW_FACTORY_CONTRACT_ADDR** | Address of the deployed XDC Smart Lock Factory |
 | **LINK_TOKEN_CONTRACT_ADDR** | Address of the deployed LINK token contract |
 | **ORACLE_CONTRACT_ADDR** | Address of the deployed Oracle contract |
 | **CHAIN_LINK_JOB_ID** | Address of the alarm job created in Chainlink node |
@@ -125,9 +125,9 @@ docker run -p 8080:8080 tlc
 
 ### Login
 ---
-- An account in [XinPay](https://chrome.google.com/webstore/detail/xinpay/bocpokimicclpaiekenaeelehdjllofo?hl=en) is required to access the application. Users will approve the transaction using XinPay.  
-- Make sure the address added in XinPay has sufficient XDC based on the network being used.
-- Add the Link token address in XinPay wallet and make sure there is sufficient LINK balance.
+- An account in [XDCPay](https://chrome.google.com/webstore/detail/xdcpay/bocpokimicclpaiekenaeelehdjllofo?hl=en) is required to access the application. Users will approve the transaction using XDCPay.  
+- Make sure the address added in XDCPay has sufficient XDC based on the network being used.
+- Add the Link token address in XDCPay wallet and make sure there is sufficient LINK balance.
 
 ![Login](ui/public/login.png)
 
@@ -137,7 +137,7 @@ Displays the list of contracts created by the user with following information -
 
 | Field | Description |
 | ------ | ------ |
-| Contract Address | Address of the Time Locked Contract   |
+| Contract Address | Address of the XDC Smart Lock  |
 | XDC | Total amount of XDC locked up |
 | Created Date | Contract creation date |
 | Unlock Date | XDC release date |
@@ -155,7 +155,7 @@ User will be provided with following actions based on the contract status -
 
 ### New Contract
 ---
-Creating Time Locked Contract is a 2 step process, which includes - 
+Creating XDC Smart Lock is a 2 step process, which includes - 
 
 - Creating a new Contract 
 - Transferring the LINK token and initiating Alarm Job in Chainlink
