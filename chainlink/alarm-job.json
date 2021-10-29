@@ -6,7 +6,7 @@
 			   "name": "xdc",
                "body": {
 				  "endpoint": "xinfin-testnet",
-				  "addresses": ["0x84f64c5ac6ebb7b2caaaa479050139650b922453"]
+				  "addresses": ["0x84F64C5AC6eBB7B2caaAA479050139650b922453"]
 				}
             }
         }
