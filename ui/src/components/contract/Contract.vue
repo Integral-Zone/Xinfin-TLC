@@ -160,7 +160,7 @@
                   </div>
                   <h6 class="text-white text-center mt-3 fs-6">
                     ** Total of <b>{{ lockedupXDC }}</b> XDC will be locked up
-                    in XDC Smar Lock contract. Click on proceed to transfer
+                    in XDC Smart Lock contract. Click on proceed to transfer
                     XDC
                   </h6>
                 </div>
