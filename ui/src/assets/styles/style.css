@@ -2,7 +2,7 @@
 
 body {
     font-family: 'Be Vietnam', sans-serif;
-    background-color: #eff3f6;
+    background-color: #f8f8fa;
 }
 
 .menu-font, .menu-font > a {
@@ -16,7 +16,7 @@ body {
 }
 
 .sub-header {
-    background-image: url(https://explorer.apothem.network/img/hero-gradient.png);
+    background-image: url(/blocks_bg.png);
     background-color: #21325b!important;
     padding: 20px 0px;
 }
@@ -138,4 +138,58 @@ input::-webkit-input-placeholder {
 
 .vc-popover-content-wrapper {
     z-index: 20000;
+}
+
+
+.status-0 {
+    background-color: #E3F2FD;
+    color: #1565C0;
+}
+
+.status-1 {
+    background-color: #FFF3E0;
+    color: #EF6C00;
+}
+
+.status-2 {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+}
+
+.status-3 {
+    background-color: #FFEBEE;
+    color: #C62828;
+}
+
+.badge-blue {
+    background-color: #B2EBF2;
+    color: #00838F;
+}
+
+.xdc-table-light tbody tr {
+    background-color: #ffffff;
+}
+
+.xdc-table-light thead tr th {
+    font-weight: 600;
+    color: #546E7A;
+}
+
+.xdc-table-light tbody tr td {
+    color: #0288D1;
+}
+
+.xdc-btn-primary {
+    background-color: #1976D2;
+    color: #E1F5FE;
+}
+
+.xdc-btn-danger {
+    background-color: #E53935;
+    color: #FFEBEE;
+}
+
+.xdc-btn-secondary {
+    background-color: #546E7A;
+    color: #CFD8DC;
 }

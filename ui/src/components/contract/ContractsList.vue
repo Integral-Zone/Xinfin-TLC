@@ -11,25 +11,27 @@
 </figure>
 </div>
     <table id="contracts" class="table table-striped dt-responsive ">
-        <thead>
+        <!-- <thead>
             <tr>
                 <th>Smart Lock Address</th>
                 <th>XDC</th>
                 <th>Created Date</th>
                 <th>Unlock Date</th>
+                <th>Node</th>
                 <th>Receivers</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(contract, index)  in contracts"  :key="contract.walletAddress">
+             <tr v-for="(contract, index)  in contracts"  :key="contract.walletAddress">
                 <td>{{contract.walletAddress}}</td>
                 <td>{{contract.xdc}}</td>
                 <td>{{contract.createdDate}}</td>
                 <td>{{contract.unlockDate}}</td>
+                <td>{{contract.nodeType}}</td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-primary position-relative" @click="showReceivers(contract.receivers, contract.funds, contract.isReleased)">
+                    <button type="button" class="btn btn-sm btn-primary position-relative" @click="showReceivers(contract)">
                         View
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             {{contract.receivers.length}}
@@ -40,22 +42,22 @@
                      <ContractStatus :contractDetails="contract"></ContractStatus>
                 </td>
                 <td>
-                    <template v-if="!contract.isLinkTransferred && !contract.isWithdrawn">
+                    <template v-if="contract.statusInt == 0">
                         <a :href="'/contract/'+contract.walletAddress" class="btn btn-sm" role="button" title="Transfer Link Token" style="font-size: 20px;"><i class="bi bi-folder-symlink"></i></a>
                         <a href="javascript:;" class="btn btn-sm" title="Withdraw XDC"  role="button" style="font-size: 18px;" @click="withdrawContract(contract, index)"><i class="bi bi-x-square"></i></a>
                     </template>
                     <span v-else>-</span>
                 </td>
-            </tr>
-        </tbody>
+            </tr> 
+        </tbody> -->
     </table>
-    <div class="text-center mt-2">
+    <!-- <div class="text-center mt-2">
         <button v-if="(this.size < this.wallets.length)" @click="loadMore" class="btn btn-sm btn-primary">Load More >></button>
         <span v-else class="fs-6">All contracts loaded</span>
-    </div>    
+    </div>     -->
     <loading v-model:active="rpcInProgress" :color="$loaderColor"/>
 
-    <Receivers :receivers="receivers" :funds="funds" :key="receiversKey" :isReleased="isReleased"></Receivers>
+    <Receivers :contractDetails="contractDetails" :key="receiversKey" ></Receivers>
     <WithdrawContract :contractDetails="contractDetails" :networkId="networkId" :address="address" @withdrawn="updateContract"></WithdrawContract>
 </div>
 </template>
@@ -71,10 +73,11 @@
  */
 import $ from 'jquery'
 import web3Util from '@/assets/js/web3-utility'
+import pagination from '@/assets/js/pagination'
 import Loading from 'vue-loading-overlay';
 
 import Receivers from './Receivers';
-import ContractStatus from './ContractStatus'
+// import ContractStatus from './ContractStatus'
 import WithdrawContract from './WithdrawContract'
 
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min.js'
@@ -94,9 +97,14 @@ export default {
             datatable: {},
             receivers: [],
             funds: [],
-            isReleased: false,
+            status: '',
             receiversKey: 0,
+            tableConfig: {
+                displayStart: 0,
+                pageLength: 5,
+            },
             index: 0,
+            totalSmartLocks: 0,
             contractDetails: {}
         }
     },
@@ -129,7 +137,7 @@ export default {
     components: {
         Loading,
         Receivers,
-        ContractStatus,
+        // ContractStatus,
         WithdrawContract
     },
     methods: {
@@ -137,23 +145,77 @@ export default {
          * Function to initialize the datable with appropriate sort, search and pagination settings
          */
         initDataTable() {
+            let vm = this
             this.datatable = $('#contracts').DataTable({
-                "aoColumns": [
-                    null,
-                    null,
-                    { "sType": "date-tlc" },
-                    null,
-                    null,
-                    null,
-                    null
+                columns: [
+                    {
+                        title: 'Address',
+                        data: 'walletAddress',
+                        render: function(cell, type, data) {
+                            return `<a href="/contracts/${data.walletAddress}">${data.walletAddress}</a>`
+                        }
+                    },
+                    {
+                        title: 'XDC',
+                        data: 'xdc',
+                    },
+                    {
+                        title: 'Created Date',
+                        data: 'createdDate',
+                        render: function(cell, type, data) {
+                            return ` <span title="${data.createdDateFrmt}">${data.createdDate}</span>`
+                        }
+                    },
+                    {
+                        title: 'Unlock Date',
+                        data: 'unlockDate',
+                        render: function(cell, type, data) {
+                            return ` <span title="${data.unlockDateFrmt}">${data.unlockDate}</span>`
+                        }
+                    },
+                    {
+                        title: 'Node',
+                        data: 'createdDate',
+                        render: function(cell, type, data) {
+                            return `${data.nodeType ? data.nodeType : '-'}`
+                        }
+                    },
+                    {
+                        title: 'Receivers',
+                        data: 'walletAddress',
+                        render: function(cell, type, data) {
+                            return ` <h6><span class="badge badge-blue">${data.receivers.length}</span></h6></span>`
+                        }
+                    },
+                    {
+                        title: 'Status',
+                        data: 'status',
+                        render: function(cell, type,data) {
+                            return `<h6><span class="badge status-${data.statusInt}">${data.status}</span></h6> `
+                        }
+                    }
                 ],
                 "bLengthChange": false,
-                "bInfo": false,
+                serverSide: true,
+                "bInfo": true,
+                searching: false,
                 "bPaginate": true,
                 "destroy": true,
+                pageLength: vm.tableConfig.pageLength,
+                displayStart: vm.tableConfig.displayStart,
                 responsive: true,
-                "order": [[ 2, "desc" ]]
+                "ordering": false,
+                "order": [[ 2, "desc" ]],
+                ajax: vm.paginate
          });
+        },
+        paginate(data, callback, settings) {
+            pagination.paginate(data, callback, settings, this, this.totalSmartLocks)
+
+            if(this.totalSmartLocks > 0) {
+                let newUrl = `${window.location.pathname}?s=${data.start}`
+                window.history.pushState(null,'', newUrl)
+            }
         },
         updateContract() {
             this.$emit('recordUpdated')
@@ -163,62 +225,12 @@ export default {
          * 2. For each contract address retrieve the contract details (i.e. receivers and corresponding XDC, total LINK tokens etc)
          */
         async load() {
+            this.totalSmartLocks = await web3Util.getTotalSmartLocks(this, this.address)
+            this.tableConfig.displayStart = this.$route.query.s ? parseInt(this.$route.query.s) : 0 
             this.initDataTable()
-            await this.getContracts()
-            this.getContractDetails()
+            // await this.getContracts()
+            // this.getContractDetails()
         },
-        /**
-         * Load the list of contracts created by logged in user 
-         */
-        async getContracts() {
-            this.wallets = await web3Util.getWallets(this, this.address)
-        },
-        /**
-         * Load the contract details for each contarct (i.e. receivers and corresponding XDC, total LINK tokens etc)
-         */
-        async getContractDetails() {
-            this.rpcInProgress = true
-            let contractDetails = []
-
-            let start = this.wallets.length - this.size
-            let end = start - this.records
-
-            if(end > this.wallets.length) {
-                end = this.size = this.wallets.length
-            }
-
-            if(end < 0) {
-                end = 0
-            }
-
-            for(let i=(start-1); i >= end ;i--) {
-                /**
-                 * Retrieves the contract details for specified address
-                 */
-                let contractDetail = await web3Util.getContractDetails(this, this.address, this.wallets[i])
-                contractDetail.walletAddress = this.wallets[i]
-                contractDetails.push(contractDetail)
-            }
-
-            /**
-             * Destroy the datatable, append additional rows retrieved and reload data table
-             */
-            $('#contracts').DataTable().destroy()
-            this.contracts.push(...contractDetails)
-            let vm = this
-            setTimeout(function() {
-                vm.initDataTable()
-            }, 1000)
-            this.rpcInProgress = false
-        },
-        /**
-         * Load additional recoreds into the data table
-         */
-        async loadMore() {
-            this.size += this.records
-            this.getContractDetails()
-        },
-
         /**
          * Function to withdraw XDC from contract to user's wallet.
          * This option will be applicable only if LINK token is not transferred to the contract
@@ -235,11 +247,9 @@ export default {
          * Display the list of receivers and corresponding XDC.
          * The results will be displayed in a modal as it would be cleaner to display it in a modal rather than in the data table
          */
-        showReceivers(receivers, funds, isReleased) {
-            this.receivers = receivers
-            this.funds = funds
+        showReceivers(contractDetail) {
+            this.contractDetails = contractDetail
             this.receiversKey+=1
-            this.isReleased = isReleased
             setTimeout(function() {
                 var myModal = new Modal(document.getElementById('receivers_modal'), {})
                 myModal.show()

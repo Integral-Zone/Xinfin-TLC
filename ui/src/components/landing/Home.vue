@@ -8,14 +8,16 @@
                     <a href="/contract" class="btn btn-primary"><i class="bi bi-menu-up"></i> Create Smart Lock </a> 
                 </div>
             </div>
+            <div class="col-md-3 col-sm-12"></div>
             <div class="col-md-3 col-sm-12 text-center">
                 <h6 class="fs-4 mb-3 mt-3">XDC Balance</h6>
-                <p>{{xdc || 0 }} XDC</p>
+                <p><b> {{xdc || 0 }}</b> XDC</p>
             </div>
-            <div class="col-md-3 col-sm-12 text-center">
-                <h6 class="fs-4 mb-3 mt-3">LINK Token Balance</h6>
-                <p class="">{{link || 0}} LINK</p>
-            </div>
+            <!-- <div class="col-md-3 col-sm-12 text-center">
+                <h6 class="fs-4 mb-3 mt-3">Token Balance</h6>
+                <p class="mb-2" v-for="(tokenBalance, index)  in tokenBalances"  :key="index"> <b>{{tokenBalance.balance || 0}}</b> {{tokenBalance.symbol}} </p>
+
+            </div> -->
         </div>
     </div>
 </div>

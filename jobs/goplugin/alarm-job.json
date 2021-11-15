@@ -1,0 +1,36 @@
+{
+    "initiators":[
+        {
+            "type":"external",
+            "params":{
+			   "name": "xdc",
+               "body": {
+				  "endpoint": "xinfin-testnet",
+				  "addresses": ["0xb9e8572e251083f5D94B5366C37F81A6Ca462F6A"]
+				}
+            }
+        }
+    ],
+    "tasks":[
+        {
+            "type":"sleep",
+            "confirmations":null,
+            "params":{
+            }
+        },
+        {
+            "type":"ethbool",
+            "confirmations":null,
+            "params":{
+            }
+        },
+        {
+            "type":"ethtx",
+            "confirmations":null,
+            "params":{
+            }
+        }
+    ],
+    "startAt":null,
+    "endAt":null
+}

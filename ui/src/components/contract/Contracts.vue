@@ -11,7 +11,7 @@
             </figure>
         </div>
 
-        <ContractInfo :key="contractInfoKey" :walletContractAddress="contractAddress" :address="address" :networkId="networkId"></ContractInfo>
+        <ContractInfo :key="contractInfoKey" :smartLockAddress="contractAddress" :address="address" :networkId="networkId"></ContractInfo>
     </div>
     
     <div class="container bg-white mt-5 mb-5 pb-4">

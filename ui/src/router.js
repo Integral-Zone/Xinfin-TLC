@@ -6,6 +6,7 @@ import Web3 from 'xdc3'
 
 import Contracts from '@/components/contract/Contracts.vue';
 import Contract from '@/components/contract/Contract.vue';
+import ContractDetails from '@/components/contract/ContractDetails.vue';
 import Login from '@/components/landing/Login.vue';
 import Home from '@/components/landing/Home.vue';
 
@@ -13,11 +14,36 @@ import Home from '@/components/landing/Home.vue';
  * Available paths/uri's in the application
  */
 const routes = [
-    { path: '/contracts', component: Contracts },
-    { path: '/contract', component: Contract },
-    { path: '/contract/:contract_address', component: Contract },
-    { path: '/login', component: Login },
-    { path: '/', component: Home }
+    { path: '/contracts', component: Contracts ,
+        meta: {
+            title: 'XDCSmartLock - Contracts'
+        }
+    },
+    { path: '/contract', component: Contract,
+        meta: {
+            title: 'XDCSmartLock - New Smart Lock'
+        }
+     },
+    { path: '/contract/:contract_address', component: Contract,
+        meta: {
+            title: 'XDCSmartLock - Edit Smart Lock'
+        }
+    },
+    { path: '/contracts/:contract_address', component: ContractDetails ,
+        meta: {
+            title: 'XDCSmartLock - View Smart Lock'
+        }
+    },
+    { path: '/login', component: Login ,    
+        meta: {
+            title: 'XDCSmartLock - Login'
+        }
+    },
+    { path: '/', component: Home,
+        meta: {
+            title: 'XDCSmartLock - Home'
+        }
+    }
 ];
 
 const router = createRouter({
@@ -33,7 +59,8 @@ const router = createRouter({
  */
 // eslint-disable-next-line
 router.beforeEach(async (to, from) => {
-
+    document.title = to.meta.title
+    
     let isLoggedIn = false
     try {
         if (window.ethereum) {

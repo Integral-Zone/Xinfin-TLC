@@ -35,10 +35,18 @@ function notifyError(message) {
     }).show();
 }
 
+const SMARTLOCK_STATUS = {
+    0: 'Created',
+    1: 'Initiated',
+    2: 'Released',
+    3: 'Withdrawn'
+}
+
 /**
  * Export all the functions
  */
 export default {
     notifySuccess,
-    notifyError
+    notifyError,
+    SMARTLOCK_STATUS
 }

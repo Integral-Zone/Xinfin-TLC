@@ -2,7 +2,7 @@
 
 # XDC Smart Lock
 ---
-Create XDC Smart Lock where the time is sourced from a Chainlink oracle.  A user would specify an amount of XDC to be locked up, a date and time at which the locked XDC will be released, and an address for the released XDC to be sent to.
+Create XDC Smart Lock where the time is sourced from a Chainlink oracle.  A funder would specify an amount of XDC to be locked up, a date and time at which the locked XDC will be released, and an address for the released XDC to be sent to.
 
 # Table of contents
 ---
@@ -19,6 +19,9 @@ Create XDC Smart Lock where the time is sourced from a Chainlink oracle.  A user
       * [Login](#login)
       * [Contracts](#contracts)
       * [New Contract](#new-contract) 
+
+
+"Chainlink",0x499F9320079C3a5Dd30AF691ea1a88e8c75FDA17,0x84F64C5AC6eBB7B2caaAA479050139650b922453,"b166b3027fd742e6be9fe203fb58f571",0xDEa3eCcfCB746A1a3EBa63865ad27872A2a5EE4a,100000000000000000      
       
 ## Overview
 ---

@@ -20,12 +20,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(receiver, index) in receivers" :key="index">
+                        <tr v-for="(receiver, index) in contractDetails.receivers" :key="index">
                             <th><p class="info-value"> <strong> <i class="bi bi-person-check-fill mr-3"></i> {{receiver || '--' }} </strong> </p></th>
-                            <th><p class="info-value"><strong> {{funds[index]}} XDC</strong></p></th>
+                            <th><p class="info-value"><strong> {{contractDetails.funds[index]}} XDC</strong></p></th>
                             <th>
-                                <h6 v-if="isReleased"><span class="badge bg-success">Released</span></h6> 
-                                <h6 v-else><span class="badge bg-warning text-dark">Pending</span></h6>
+                              <h6><span :class="'badge status-'+contractDetails.statusInt">{{contractDetails.status}}</span></h6> 
                             </th>
                         </tr>
                     </tbody>
@@ -60,9 +59,7 @@ export default {
      * 3. Is XDC released to the receivers
      */
     props: {
-        receivers: Array,
-        funds: Array,
-        isReleased: Boolean
+        contractDetails: Object
     }
 }
 </script>

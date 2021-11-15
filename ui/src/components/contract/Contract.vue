@@ -19,7 +19,7 @@
             <a class="nav-link" href="#step-1"> Transfer XDC </a>
           </li>
           <li>
-            <a class="nav-link" href="#step-2"> Initiate Chainlink Job </a>
+            <a class="nav-link" href="#step-2"> Initiate Job </a>
           </li>
           <li>
             <a class="nav-link" href="#step-3"> Contract Details </a>
@@ -104,8 +104,9 @@
                         <input
                           type="text"
                           class="form-control"
-                          placeholder="xdc29ac7...."
+                          placeholder="0x29ac7...."
                           required
+                          v-on:blur="formatAddress"
                           v-model="target.receiver"
                         />
                       </div>
@@ -170,21 +171,90 @@
           </div>
           <div id="step-2" class="tab-pane" role="tabpanel">
             <form id="step_form_1">
-              <div class="row">
+              <!-- <div class="row">
                 <div class=".d-none .d-md-block .d-lg-none col-md-2"></div>
                 <div class="col-sm-12 col-md-8 text-center">
                   <label class="form-label contract-inp-header">Transfer LINK token to initiate the Chainlink job. Your current balance is <b>{{ data.linkBalance }} LINK </b>.</label>
-                  <label class="form-label contract-inp-header">By proceeding <b>0.1 LINK</b> token will be transferred to the XDC Smart Lock at address <b>{{data.walletContractAddress}}</b>.</label>
+                  <label class="form-label contract-inp-header">By proceeding <b>0.1 LINK</b> token will be transferred to the XDC Smart Lock at address <b>{{data.smartLockAddress}}</b>.</label>
                 </div>
                 <div class=".d-none .d-md-block .d-lg-none col-md-2"></div>
+              </div> -->
+              <div class="row">
+                <div class="col text-center text-white pb-4">
+                  <label class="form-label contract-inp-header">XDC Smart Lock created. Address: <b>{{data.smartLockAddress}}</b>.</label>
+                 <p class="fs-5">Choose a Decentralized Oracle to transfer funds based on the duration specified</p>
+                </div>
+              </div> 
+                <div class="row">
+                  <div class="col"></div>
+                  <div class="col d-flex justify-content-center">
+                    <div class="card text-center" style="width: 25rem;">
+                      <img src="@/assets/images/chainlink_logo.svg" class="mx-auto p-1 mt-3 pb-0" alt="Chainlink" style="height:30%; width:70%">
+                      <hr class="mb-0">
+                      <div class="card-body">
+                        <h2 class="card-title">Chainlink</h2>
+                        <p class="card-text">Chainlink decentralized oracle networks provide tamper-proof inputs, outputs, and computations 
+                          to support advanced smart contracts on XDC blockchain</p>
+                         <small>For more information visit <a href="https://chain.link/" target="_blank" class="card-link">chain.link</a> site</small>
+                        <hr>
+                        <figure>
+                          <blockquote class="blockquote">
+                            <h6 class="text-center">Charges</h6>
+                            <h2 class="text-center" v-if="tokenDetails['Chainlink']">{{tokenDetails['Chainlink'].fee}} {{tokenDetails['Chainlink'].symbol}} <b v-if="tokenDetails['Chainlink']"> = $ {{tokenDetails['Chainlink'].usdFee}}</b> </h2>
+                          </blockquote>
+                          <figcaption class="blockquote-footer">
+                            <cite title="Source Title">Price sourced from <a href="https://www.coingecko.com/" target="_blank"> CoinGecko</a> </cite>
+                          </figcaption>
+                        </figure>
+                        <hr>
+                          <div class="form-check d-inline-block">
+                          <input class="form-check-input" type="radio" name="nodeType" id="nodeType1" v-model="data.nodeType" value="Chainlink">
+                          <label class="form-check-label" for="nodeType1">
+                            <b>Use Chainlink</b>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col d-flex justify-content-center">
+                    <div class="card text-center pt-3" style="width: 25rem;">
+                      <img src="@/assets/images/goplugin_logo.png" class="mx-auto p-1" alt="Go Plugin" style="height:24%; width: 50%">
+                      <hr class="mb-0">
+                      <div class="card-body">
+                        <h2 class="card-title">Plugin</h2>
+                        <p class="card-text">Common framework platform on XDC Network nodes to run decentralized web3 APIs 24x7 without any centralized failure, 
+                          by providing cost effective solutions </p>
+                         <small>For more information visit <a href="https://goplugin.co/" target="_blank" class="card-link">goplugin.co</a> site</small>
+                         <hr>
+                         <figure>
+                          <blockquote class="blockquote">
+                            <h6 class="text-center">Charges</h6>
+                            <h2 class="text-center" v-if="tokenDetails['Plugin']">{{tokenDetails['Plugin'].fee}} {{tokenDetails['Plugin'].symbol}} <b v-if="tokenDetails['Plugin']"> = $ {{tokenDetails['Plugin'].usdFee}}</b> </h2>
+                          </blockquote>
+                          <figcaption class="blockquote-footer">
+                            <cite title="Source Title">Price sourced from <a href="https://www.coingecko.com/" target="_blank"> CoinGecko</a> </cite>
+                          </figcaption>
+                        </figure>
+                        <hr>
+                            <div class="form-check d-inline-block">
+                              <input class="form-check-input" type="radio" name="nodeType" id="nodeType2" v-model="data.nodeType" value="Plugin">
+                              <label class="form-check-label" for="nodeType2">
+                                <b>Use Plugin</b>
+                              </label>
+                            </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col"></div>
               </div>
+              <h6 v-if="tokenDetails[data.nodeType]" class="text-center text-white mt-4">Current selection: <b>{{data.nodeType}}</b>. Balance: <b>{{tokenDetails[data.nodeType].balance}} {{tokenDetails[data.nodeType].symbol}}</b> </h6>
             </form>
           </div>
           <div id="step-3" class="tab-pane" role="tabpanel">
             <form id="step_form_3"></form>
             <ContractInfo
               :key="showContractDetailsKey"
-              :walletContractAddress="data.walletContractAddress"
+              :smartLockAddress="data.smartLockAddress"
               :address="data.address"
               :networkId="data.networkId"
             ></ContractInfo>
@@ -207,6 +277,7 @@ import "smartwizard/dist/js/jquery.smartWizard.min.js";
 import Loading from "vue-loading-overlay";
 
 import web3Util from "@/assets/js/web3-utility";
+import marketPriceUtil from "@/assets/js/market-price";
 import common from "@/assets/js/common";
 
 import ContractInfo from "./ContractInfo";
@@ -236,12 +307,14 @@ export default {
         linkBalance: 0,
         link: 0.1,
         duration: 0,
-        walletContractAddress: "",
+        smartLockAddress: "",
         targets: [{ xdc: 0.000001, receiver: '' }],
+        nodeType: 'Chainlink'
       },
       date: new Date(),
       contractDetails: {},
       showContractDetailsKey: 0,
+      tokenDetails: {},
       /**
        * TLC wizard configuration
        */
@@ -281,6 +354,7 @@ export default {
    */
   mounted() {
     this.initWizard();
+    // $('#create_contract').smartWizard("goToStep", 1);
   },
   /**
    * Required components -
@@ -322,12 +396,12 @@ export default {
      * 
      */
     async loadContract() {
-      this.data.walletContractAddress = this.$route.params.contract_address
-      if(!this.data.walletContractAddress) {
+      this.data.smartLockAddress = this.$route.params.contract_address
+      if(!this.data.smartLockAddress) {
           return
       }
       this.rpcInProgress = true
-      this.contractDetails = await web3Util.getContractDetails(this, this.data.address, this.data.walletContractAddress)
+      this.contractDetails = await web3Util.getContractDetails(this, this.data.address, this.data.smartLockAddress)
       
       this.progressWizard();
     },
@@ -355,13 +429,19 @@ export default {
        * This callback will be used to display the created contract details in the final step
        */
       // eslint-disable-next-line
-      $("#create_contract").on("showStep", function (e, anchorObject, stepIndex, stepDirection) {
+      $("#create_contract").on("showStep", async function (e, anchorObject, stepIndex, stepDirection) {
           
           if (stepIndex == 1) {
             $(".sw-btn-group-extra").removeClass("d-none");
             $(".button.sw-btn-next").addClass("d-none");
 
             vm.showContractDetailsKey += 1;
+          }else if(stepIndex == 0) {
+              setTimeout(async function() {
+                vm.rpcInProgress = true
+                vm.tokenDetails = await marketPriceUtil.getTokenPriceDetails(vm, vm.data);
+                vm.rpcInProgress = false
+              }, 500)
           }
         }
       );
@@ -376,7 +456,7 @@ export default {
             return true;
           }
 
-          if(vm.data.walletContractAddress && currentStepIndex === 0) {
+          if(vm.data.smartLockAddress && currentStepIndex === 0) {
             return true;
           }
 
@@ -404,13 +484,13 @@ export default {
           /**
            * Initial step if the wizard where the new contract would be created
            */
-          this._transferXDC();
+          this._createSmartLock();
           break;
         case 1:
           /**
            * Second step of the wizard where LINK token will be transferred to the contract
            */
-          this._transferLinkToken();
+          this._transferToken();
           break;
         default:
           console.log("Invalid Step ", step);
@@ -431,7 +511,7 @@ export default {
     * 2. XDC Lock up time
     * 3. Total XDC to be locked up
     */
-    async _transferXDC() {
+    async _createSmartLock() {
 
       var xdc = this.$web3js.utils.toWei(this.lockedupXDC + "", "ether");
       let lockDuration = (this.date.getTime() - new Date().getTime())/1000
@@ -445,11 +525,11 @@ export default {
       /**
        * Create the new contract and wait for the confirmation i.e wait till the block is created in Block Chain
        */
-      var tlw = await web3Util.transferXDC(this, this.data);
+      var tlw = await web3Util.createSmartLock(this, this.data);
       this.rpcInProgress = true;
       const vm = this;
       try {
-        tlw.send({ from: this.data.address, value: xdc }, function (error, transactionHash) {
+        tlw.send({ from: this.data.address, value: xdc+""  }, function (error, transactionHash) {
             if (error) {
               vm.rpcInProgress = false;
               return;
@@ -470,8 +550,7 @@ export default {
               /**
                * Retrieve the new contract address
                */
-              var wallets = await web3Util.getWallets(vm, vm.data.address);
-              vm.data.walletContractAddress = wallets[wallets.length - 1];
+              vm.data.smartLockAddress = await web3Util.getUserRecentSmartLock(vm, vm.data.address)
 
               /**
                * Notify user with success message and progress the wizard to next step
@@ -491,17 +570,25 @@ export default {
       }
       
     },
+
+    formatAddress() {
+        for(let target of this.data.targets) {
+            if(target.receiver && target.receiver.startsWith('xdc')) {
+                target.receiver = target.receiver.replace('xdc', '0x')
+            }
+        }
+    },
     /**
      * Transfer LINK token to the contract
      */
-    async _transferLinkToken() {
-      var linkRpc = await web3Util.transferLinkToken(this, this.data);
+    async _transferToken() {
+      var tokenContract = await web3Util.transferToken(this, this.data, this.tokenDetails);
       this.rpcInProgress = true;
       const vm = this;
        /**
        * Transfer LINK token and wait for the confirmation i.e wait till the transaction is complete
        */
-      linkRpc.send(
+      tokenContract.send(
         { from: this.data.address },
         function (error, transactionHash) {
           if (error) {

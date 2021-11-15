@@ -11,7 +11,7 @@
                     <div class="row bg-white pb-4">
                     
                     <div class="col">
-                        <h6 class="display-8"> This action will transfer the XDC back to your wallet. Are you sure ? </h6>
+                        <h6 class=""> This action will transfer the XDC back to your wallet. Are you sure ? </h6>
                     </div>
                     </div>
 
@@ -79,7 +79,7 @@ export default {
         async withdraw() {
             this.rpcInProgress = true;
             let vm = this
-            var tlw = await web3Util.withdrawConract(this, this.contractDetails.walletAddress);
+            var tlw = await web3Util.withdrawConract(this, this.contractDetails);
             /**
              * Send the withdrawl request
              */

@@ -22,11 +22,13 @@ async function getAddress(vm) {
  * 
  * @returns - Balance converted XDC
  */
-async function getBalance(vm, addr) {
+async function getBalance(vm, addr, format) {
   try {
     let balance = await vm.$web3js.eth.getBalance(addr);
     balance = vm.$web3js.utils.fromWei(balance, 'ether');
-    balance = parseFloat(balance).toFixed(3)
+    if(format) {
+      balance = parseFloat(balance).toFixed(3) 
+    }
     return balance
   }catch(err) {
     console.log(err)
@@ -35,27 +37,35 @@ async function getBalance(vm, addr) {
   }
 }
 
+
 /**
- * Retrieves the LINK token balance of the given address
+ * Retrieves the token balances for the supported node types. Refer assests/js/common.js -> SUPPORTED_NODE_TYPES for more info
  * 
  * @param {*} vm - Component with web3 instance
- * @param {*} addr - Address to get the LINK token balance 
+ * @param {*} addr - Address to get the token balances
  * 
- * @returns - LINK token Balance 
+ * @returns - Token Balance and corresponding symbols 
  */
-async function getLINKBalance(vm, addr) {
+async function getTokenBalance(vm, addr) {
+  let tokenBalances = {}
   try {
-    const linkContract = await new vm.$web3js.eth.Contract(getNetworkConfig(vm).LINK_TOKEN_ABI, getNetworkConfig(vm).LINK_TOKEN_CONTRACT_ADDR);
-    let balance = await linkContract.methods.balanceOf(addr).call();
-    balance = balance / (10**18)
-    balance = parseFloat(balance).toFixed(3)
-    return balance
-  }catch(err) {
+    for(const nodeType of common.SUPPORTED_NODE_TYPES) {
+        let config = getNetworkConfig(nodeType, vm.networkId)
+        let tokenContract = await new vm.$web3js.eth.Contract(config.TOKEN_ABI, config.TOKEN_CONTRACT_ADDR)
+        let balance = await tokenContract.methods.balanceOf(addr).call()
+        balance = balance / (10**config.DECIMALS)
+        tokenBalances[nodeType] = {
+          balance: balance,
+          symbol: config.SYMBOL
+        }
+    }
+  }
+  catch(err) {
     console.log(err)
     vm.rpcInProgress = false
-    // common.notifyError('Error processing request')
+    common.notifyError('Error fetching token balances')
   }
-   
+  return tokenBalances
 }
 
 /**
@@ -64,11 +74,15 @@ async function getLINKBalance(vm, addr) {
  * @param {*} vm - Component with web3 instance
  * @param {*} config - Receivers and corresponding funds
  * 
- * @returns - XDC Smart Lock factory's newTimeLockedContract method instance, which will be used to create a new contract/wallet and transfer XDC
+ * @returns - XDC Smart Lock factory's createInstance method instance, which will be used to create a new contract/wallet and transfer XDC
  */
-async function transferXDC(vm, config) {
+async function createSmartLock(vm, config) {
   try {
-    const tlwFactoryContract = await new vm.$web3js.eth.Contract(getNetworkConfig(vm).TLW_FACTORY_CONTRACT_ABI, getNetworkConfig(vm).TLW_FACTORY_CONTRACT_ADDR);
+    const networkConfig = getNetworkConfig(vm.networkId)
+    const smartLockConfig = await getSmartLockConfig(vm)
+    const factoryAddress = await smartLockConfig.methods.getSmartLockFactoryAddress().call({from: config.address})
+
+    const smartLockContract = await new vm.$web3js.eth.Contract(networkConfig.SMARTLOCK_FACTORY_ABI, factoryAddress)
     let receivers = []
     let funds = []
     for(let target of config.targets) {
@@ -76,28 +90,9 @@ async function transferXDC(vm, config) {
        /**
         * Convert the value in XDC to wei
         */
-       funds.push(parseInt(vm.$web3js.utils.toWei(target.xdc+'', 'ether'))+'')
+       funds.push(vm.$web3js.utils.toWei(target.xdc+'', 'ether'))
     }
-    return await tlwFactoryContract.methods.newTimeLockedContract(receivers, funds, getNetworkConfig(vm).ORACLE_CONTRACT_ADDR, vm.$web3js.utils.fromAscii(getNetworkConfig(vm).CHAIN_LINK_JOB_ID), getNetworkConfig(vm).LINK_TOKEN_CONTRACT_ADDR, getNetworkConfig(vm).CHAIN_LINK_FEE+'', config.duration);
-  }catch(err) {
-    console.log(err)
-    vm.rpcInProgress = false
-    common.notifyError('Error processing request')
-  }
-}
-
-/**
- * Method to initiate XDC Smart Lock, which inturn triggers the respective job in Chainlink oracle node
- * 
- * @param {*} vm - Component with web3 instance
- * @param {*} config - Lockup Duration 
- * 
- * @returns - Execution status 
- */
-async function initiateTimeLockedWallet(vm, config) {
-  try {
-    const tlwContract = await new vm.$web3js.eth.Contract(getNetworkConfig(vm).TLW_CONTRACT_ABI, config.walletContractAddress);
-    return await tlwContract.methods.initiateAlarm(config.duration, getNetworkConfig(vm).CHAIN_LINK_FEE+'');
+    return await smartLockContract.methods.createSmartLock(receivers, funds, config.duration, networkConfig.SMARTLOCK_STORE_ADDR)
   }catch(err) {
     console.log(err)
     vm.rpcInProgress = false
@@ -108,9 +103,10 @@ async function initiateTimeLockedWallet(vm, config) {
 /**
  * 
  */
-async function withdrawConract(vm, walletAddress) {
+async function withdrawConract(vm, contractDetails) {
   try {
-    const tlwContract = await new vm.$web3js.eth.Contract(getNetworkConfig(vm).TLW_CONTRACT_ABI, walletAddress);
+    console.log(contractDetails)
+    const tlwContract = await new vm.$web3js.eth.Contract(getNetworkConfig(vm.networkId).SMARTLOCK_ABI, contractDetails.walletAddress);
     return await tlwContract.methods.withdraw();
   }catch(err) {
     console.log(err)
@@ -129,16 +125,29 @@ async function withdrawConract(vm, walletAddress) {
  * 
  * @returns - Execution status 
  */
-async function transferLinkToken(vm, config) {
+async function transferToken(vm, config, tokenDetails) {
   try {
-    const tlwFactoryContract = await new vm.$web3js.eth.Contract(getNetworkConfig(vm).LINK_TOKEN_ABI, getNetworkConfig(vm).LINK_TOKEN_CONTRACT_ADDR);
-    let link = config.link * (10**18)
-    return await tlwFactoryContract.methods.transferAndCall(config.walletContractAddress, link+'', vm.$web3js.utils.asciiToHex('nodata'));
+    const networkConfig = getNetworkConfig(vm.networkId)
+    const smartLockConfig = await getSmartLockConfig(vm)
+    const conf = await smartLockConfig.methods.getConfig(config.nodeType).call()
+    const tokenContract = await new vm.$web3js.eth.Contract(networkConfig.TOKEN_ABI, conf[1]);
+    return await tokenContract.methods.transferAndCall(config.smartLockAddress, tokenDetails[config.nodeType].feeInt+'', vm.$web3js.utils.asciiToHex(config.nodeType));
   }catch(err) {
     console.log(err)
     vm.rpcInProgress = false
     common.notifyError('Error processing request')
   }
+}
+
+/**
+ * Get the smart lock config instance based on the config address stored in SmartLock Store
+ */
+async function getSmartLockConfig(vm) {
+  const networkConfig = getNetworkConfig(vm.networkId)
+  const smartLockStore = await new vm.$web3js.eth.Contract(networkConfig.SMARTLOCK_STORE_ABI, networkConfig.SMARTLOCK_STORE_ADDR);
+  const configAddress = await smartLockStore.methods.getSmartLockConfigAddr().call();
+  const smartLockConfig = await new vm.$web3js.eth.Contract(networkConfig.SMARTLOCK_CONFIG_ABI, configAddress);
+  return smartLockConfig;
 }
 
 /**
@@ -149,10 +158,62 @@ async function transferLinkToken(vm, config) {
  * 
  * @returns - List of XDC Smart Lock contracts created by the specified address
  */
-async function getWallets(vm, addr) {
+async function getSmartLocks(vm, addr, limit, offset) {
   try{
-    const tlwFactoryContract = await new vm.$web3js.eth.Contract(getNetworkConfig(vm).TLW_FACTORY_CONTRACT_ABI, getNetworkConfig(vm).TLW_FACTORY_CONTRACT_ADDR);
-    return await tlwFactoryContract.methods.getWallets(addr).call({from: addr});
+    const networkConfig = getNetworkConfig(vm.networkId)
+    const storeAddress = networkConfig.SMARTLOCK_STORE_ADDR;
+
+    const smartLockStore = await new vm.$web3js.eth.Contract(networkConfig.SMARTLOCK_STORE_ABI, storeAddress);
+    return await smartLockStore.methods.getUserSmartLocks(addr, limit , offset).call({from: addr});
+
+  }catch(err) {
+    console.log(err)
+    vm.rpcInProgress = false
+    common.notifyError('Error processing request')
+  }
+}
+
+
+/**
+ * 
+ * Get total count of smart lock instances created by the user
+ * 
+ * @param {*} vm 
+ * @param {*} addr 
+ * @returns 
+ */
+async function getTotalSmartLocks(vm, addr) {
+  try{
+    const networkConfig = getNetworkConfig(vm.networkId)
+    const storeAddress = networkConfig.SMARTLOCK_STORE_ADDR;
+
+    const smartLockStore = await new vm.$web3js.eth.Contract(networkConfig.SMARTLOCK_STORE_ABI, storeAddress);
+    let total = await smartLockStore.methods.getTotalSmartLocks(addr).call({from: addr});
+    return parseInt(total)
+
+  }catch(err) {
+    console.log(err)
+    vm.rpcInProgress = false
+    common.notifyError('Error processing request')
+  }
+}
+
+/**
+ * 
+ * Get the most recent smartlock instance address created by the user 
+ * 
+ * @param {*} vm 
+ * @param {*} addr 
+ * @returns 
+ */
+async function getUserRecentSmartLock(vm, addr) {
+  try{
+    const networkConfig = getNetworkConfig(vm.networkId)
+    const storeAddress = networkConfig.SMARTLOCK_STORE_ADDR;
+
+    const smartLockStore = await new vm.$web3js.eth.Contract(networkConfig.SMARTLOCK_STORE_ABI, storeAddress);
+    return await smartLockStore.methods.getUserRecentSmartLock(addr).call({from: addr})
+
   }catch(err) {
     console.log(err)
     vm.rpcInProgress = false
@@ -189,7 +250,6 @@ async function waitForReceipt(vm, hash, cb) {
     });
 }
 
-
 /**
  * Retrieves the XDC Smart Lock Contract details for the specified contract address
  * 
@@ -207,12 +267,11 @@ async function waitForReceipt(vm, hash, cb) {
  * - Available LINK token balance
  * - Statis of contract. i.e. Indicating if the funds are released 
  */
-async function getContractDetails(vm, address, walletAddress) {
+async function getContractDetails(vm, address, smartLockAddress) {
   try {
-    const tlwContract = await new vm.$web3js.eth.Contract(getNetworkConfig(vm).TLW_CONTRACT_ABI, walletAddress);
-    let info = await tlwContract.methods.info().call({from: address})
-    let linkBalance = info[8] / (10**18)
-    // let offset = (new Date().getTimezoneOffset())
+    const networkConfig = getNetworkConfig(vm.networkId)
+    const smartLockContract = await new vm.$web3js.eth.Contract(networkConfig.SMARTLOCK_ABI, smartLockAddress);
+    let info = await smartLockContract.methods.info().call({from: address})
 
     let funds = []
     for(let fund of info[2]) {
@@ -223,15 +282,22 @@ async function getContractDetails(vm, address, walletAddress) {
       sender: info[0],
       receivers: info[1],
       funds: funds,
-      unlockDate: ((info[3] && info[3] != '0') ? moment(info[3]*1000).format("DD-MMM-YYYY HH:mm:ss") : '-'),
-      createdDate: moment(info[4]*1000).format("DD-MMM-YYYY HH:mm:ss"),
+      unlockDateTS: ((info[3] && info[3] != '0') ? parseInt(info[3]) : 0) * 1000,
+      unlockDateFrmt: ((info[3] && info[3] != '0') ? moment(info[3]*1000).format("DD-MMM-YYYY HH:mm:ss") : '-'),
+      unlockDate: ((info[3] && info[3] != '0') ? moment(info[3]*1000).fromNow() : '-'),
+      createdDateFrmt: moment(info[4]*1000).format("DD-MMM-YYYY HH:mm:ss"),
+      createdDate: moment(info[4]*1000).fromNow(),
       xdc: vm.$web3js.utils.fromWei(info[5], 'ether'),
-      link: linkBalance,
-      isReleased: info[6],
-      isLinkTransferred: info[7],
-      isWithdrawn: info[9]
+      status: common.SMARTLOCK_STATUS[info[6]],
+      statusInt: parseInt(info[6]),
+      walletAddress: smartLockAddress
     }
-
+    
+    if([1,2].includes(resp.statusInt)) {
+      let clientInfo = await smartLockContract.methods.clientInfo().call({from: address})  
+      resp.tokenSymbol = clientInfo[1]
+      resp.nodeType = clientInfo[0]
+    }
     return resp
   }catch(err) {
     console.log(err)
@@ -243,12 +309,13 @@ async function getContractDetails(vm, address, walletAddress) {
 export default {
   getAddress,
   getBalance,
-  getLINKBalance,
-  transferXDC,
-  initiateTimeLockedWallet,
-  transferLinkToken,
-  getWallets,
+  createSmartLock,
+  transferToken,
+  getSmartLocks,
   waitForReceipt,
   getContractDetails,
-  withdrawConract
+  withdrawConract,
+  getTokenBalance,
+  getUserRecentSmartLock,
+  getTotalSmartLocks
 }

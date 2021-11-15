@@ -1,8 +1,5 @@
 <template>
-    <h6 v-if="contractDetails.isWithdrawn"><span class="badge bg-secondary">Withdrawn</span></h6> 
-    <h6 v-else-if="!contractDetails.isLinkTransferred"><span class="badge bg-danger">Not Initiated</span></h6> 
-    <h6 v-else-if="contractDetails.isReleased"><span class="badge bg-success">Released</span></h6> 
-    <h6 v-else><span class="badge bg-warning text-dark">Pending</span></h6>
+    <h6><span :class="'badge status-'+contractDetails.statusInt">{{contractDetails.status}}</span></h6> 
 </template>
 
 <script>

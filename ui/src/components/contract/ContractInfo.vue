@@ -5,7 +5,7 @@
                     <i class="bi bi-ui-radios info-icon"></i>
                     <div class="info-text-area">
                         <p class="mb-0 info-header"><strong>XDC SMART LOCK ADDR</strong></p>
-                        <p class="mb-0 info-value"><strong>{{contractDetails.unlockDate ? (walletContractAddress || '--') : 'NOT FOUND'}} </strong></p>
+                        <p class="mb-0 info-value"><strong>{{contractDetails.unlockDate ? (smartLockAddress || '--') : 'NOT FOUND'}} </strong></p>
                     </div>
                 </div>
               </div>
@@ -22,8 +22,8 @@
                 <div class="d-flex border p-2 border-start-0 border-end-0">
                     <i class="bi bi-cash-coin info-icon" style="font-size: 2.3rem; color: cornflowerblue;"></i>
                     <div class="info-text-area">
-                        <p class="mb-0 info-header"><strong>LINK TOKEN TRANSFERRED</strong></p>
-                        <p class="mb-0 info-value"><strong>{{contractDetails.link || '0'}} LINK</strong></p>
+                        <p class="mb-0 info-header"><strong>ORACLE NODE</strong></p>
+                        <p class="mb-0 info-value"><strong>{{contractDetails.nodeType}}</strong></p>
                     </div>
                 </div>
               </div>
@@ -92,12 +92,12 @@ export default {
     /**
      * Properties to be sent by the importing contract 
      * 
-     * walletContractAddress - Address of the smart contract contract 
+     * smartLockAddress - Address of the smart contract contract 
      * address - Address of the user
      * networkId - Current network id selected in XDCPay
      */
     props: {
-        walletContractAddress: String,
+        smartLockAddress: String,
         address: String,
         networkId: Number
     },
@@ -117,7 +117,7 @@ export default {
      * 1. Retrieves the contract details and displays the same
      */
     mounted() {
-        if(this.walletContractAddress && this.address) {
+        if(this.smartLockAddress && this.address) {
             this.showContractDetails()
         }
     },
@@ -127,7 +127,7 @@ export default {
          */
         async showContractDetails() {
             this.rpcInProgress = true
-            let details = await web3Util.getContractDetails(this, this.address, this.walletContractAddress)
+            let details = await web3Util.getContractDetails(this, this.address, this.smartLockAddress)
             this.contractDetails = details
             this.rpcInProgress = false
       },
