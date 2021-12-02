@@ -111,6 +111,14 @@
         </div>
 
         <div class="row mt-4">
+            <div class="col">
+                <h3 class="">Clone</h3>
+                <p>Clone this contract and create a new XDC Smart Lock with same set of receivers and locked up XDC </p>
+                <a :href="'/contract/'+contractDetails.walletAddress+'/clone'" type="button" class="btn btn-sm xdc-btn-warning" style="margin-right: 10px"> <i class="bi bi-app-indicator"></i> Clone</a>
+            </div>
+        </div> 
+
+        <div class="row mt-4">
             <div class="col text-center">
                 <button type="button" class="btn btn-sm xdc-btn-secondary" @click="showContracts()"><i class="bi bi-x-circle"></i> Close</button>
             </div>

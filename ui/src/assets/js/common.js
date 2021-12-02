@@ -42,11 +42,19 @@ const SMARTLOCK_STATUS = {
     3: 'Withdrawn'
 }
 
+const APOTHEM_NETWORK_ID = 51
+
+function isApothem(networkId) {
+    return networkId == APOTHEM_NETWORK_ID
+}
+
 /**
  * Export all the functions
  */
 export default {
     notifySuccess,
     notifyError,
-    SMARTLOCK_STATUS
+    SMARTLOCK_STATUS,
+    APOTHEM_NETWORK_ID,
+    isApothem
 }

@@ -19,11 +19,9 @@ Create XDC Smart Lock where the time can be sourced from multiple oracle nodes. 
       * [Using Docker](#using-docker)
    * [Accessing the Application](#accessing-the-application)
       * [Login](#login)
+      * [Faucet](#faucet)
       * [Contracts](#contracts)
       * [New Contract](#new-contract) 
-
-
-"Chainlink",0x499F9320079C3a5Dd30AF691ea1a88e8c75FDA17,0x84F64C5AC6eBB7B2caaAA479050139650b922453,"b166b3027fd742e6be9fe203fb58f571",0xDEa3eCcfCB746A1a3EBa63865ad27872A2a5EE4a,100000000000000000      
       
 ## Overview
 ---
@@ -149,7 +147,7 @@ Compile and deploy the contracts required for XDC Smart Lock creation using [rem
     - Invoke **setConfig** method with Chainlink configurations Eg: 
     "Chainlink",0x499F9320079C3a5Dd30AF691ea1a88e8c75FDA17,0x84F64C5AC6eBB7B2caaAA479050139650b922453,"b166b3027fd742e6be9fe203fb58f571",0xDEa3eCcfCB746A1a3EBa63865ad27872A2a5EE4a,100000000000000000
     - Invoke **setConfig** method with Plugin configurations Eg: 
-    "Plugin",0x4068b305f897CFb06baEF17673af8f04D008EF12,0xb9e8572e251083f5D94B5366C37F81A6Ca462F6A,"333e1505897841ddbc0ad3100ff83901",0xd3d22e9dA8ED7398631446e5Ae87D6B286Fa374f,100000000000000000
+    "Plugin",0x4068b305f897CFb06baEF17673af8f04D008EF12,0xb9e8572e251083f5D94B5366C37F81A6Ca462F6A,"a781b7cbe6734f42af8cb01ef20c086c",0xd3d22e9dA8ED7398631446e5Ae87D6B286Fa374f,100000000000000000
   - Set XDCSmartLockFactory contract address by calling **setSmartLockFactoryAddress** method  
   - Copy the XDCSmartLockConfigProxy address which will be used later in XDCSmartLockStore
 
@@ -211,6 +209,12 @@ docker run -p 8080:8080 xdc-smartlock
 - Add the Link token address in XDCPay wallet and make sure there is sufficient LINK balance.
 
 ![Login](ui/public/login.png)
+
+### Faucet
+---
+Acquire Apothem (testnet) LINK and PLI tokens. Select the required token type and click on proceed to get the tokens to test in Apothem network.
+
+![Login](ui/public/xdc_smart_lock_faucet.png)
 
 ### Smart Locks
 ---

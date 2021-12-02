@@ -5,15 +5,29 @@ import axios from 'axios'
  * Get token market price from exchange (CoinGecko) and calculate the appropriate price
  */
 async function getTokenPriceDetails(vm, config) {
-    let resp = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=chainlink%2Cplugin&vs_currencies=usd')
     let tokenBalances = await getTokenBalances(vm, config)
-    resp = resp.data
     
-    Object.keys(tokenBalances).forEach(function(key) {
-        tokenBalances[key].usdValue = resp[key.toLowerCase()].usd
-        tokenBalances[key].usdFee = (tokenBalances[key].usdValue * tokenBalances[key].fee).toFixed(2)
-    })
+    try {
 
+        /**
+         * 
+         * For development, proxy Coinmarket Cap API https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?slug=chainlink,plugin
+         * and use the appropriate proxy URL below.
+         * Vist https://coinmarketcap.com/api/ for more information on generating and using the API key
+         * 
+         */
+        let resp = await axios.get('/crypto/price')
+        resp = resp.data.data
+
+        Object.keys(resp).forEach(function(key) {
+            let details = resp[key]
+            tokenBalances[details.name].usdValue = details.quote.USD.price
+            tokenBalances[details.name].usdFee = (details.quote.USD.price * tokenBalances[details.name].fee).toFixed(2)
+        })
+    }catch(err) {
+        console.log(err)
+    }
+    
     return tokenBalances
 }
 
@@ -38,6 +52,7 @@ async function getTokenBalances(vm, config) {
         resp[nodeType].decimals = await tokenContract.methods.decimals().call()
         resp[nodeType].fee = nodeTypeConfig[3] / (10**resp[nodeType].decimals)
         resp[nodeType].feeInt = nodeTypeConfig[3]
+        resp[nodeType].address = nodeTypeConfig[0]
         resp[nodeType].balance = (resp[nodeType].balance / (10**resp[nodeType].decimals)).toFixed(2)
     }    
     return resp

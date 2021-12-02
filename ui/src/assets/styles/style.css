@@ -73,6 +73,14 @@ body {
     font-size: 1.3rem;
 }
 
+.display-9 {
+    font-size: 1.0rem;
+}
+
+.display-10 {
+    font-size: 0.9rem;
+}
+
 .info-header {
     font-size: .75rem;
     color: #77838f;
@@ -192,4 +200,9 @@ input::-webkit-input-placeholder {
 .xdc-btn-secondary {
     background-color: #546E7A;
     color: #CFD8DC;
+}
+
+.xdc-btn-warning {
+    background-color: #EF6C00;
+    color: #FFF3E0;
 }

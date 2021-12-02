@@ -6,6 +6,7 @@ import Web3 from 'xdc3'
 
 import Contracts from '@/components/contract/Contracts.vue';
 import Contract from '@/components/contract/Contract.vue';
+import Faucet from '@/components/faucet/Faucet.vue';
 import ContractDetails from '@/components/contract/ContractDetails.vue';
 import Login from '@/components/landing/Login.vue';
 import Home from '@/components/landing/Home.vue';
@@ -24,9 +25,19 @@ const routes = [
             title: 'XDCSmartLock - New Smart Lock'
         }
      },
+     { path: '/faucet', component: Faucet,
+        meta: {
+            title: 'XDCSmartLock - Faucet'
+        }
+     },
     { path: '/contract/:contract_address', component: Contract,
         meta: {
             title: 'XDCSmartLock - Edit Smart Lock'
+        }
+    },
+    { path: '/contract/:contract_address/clone', component: Contract,
+        meta: {
+            title: 'XDCSmartLock - Clone'
         }
     },
     { path: '/contracts/:contract_address', component: ContractDetails ,

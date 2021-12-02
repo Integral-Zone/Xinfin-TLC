@@ -164,6 +164,27 @@
                     in XDC Smart Lock contract. Click on proceed to transfer
                     XDC
                   </h6>
+
+                  <div class="row mt-4">
+                      <div class="col">
+                        <hr class="text-white">
+                      </div> 
+                      <div class="col-1 text-white">OR</div> 
+                      <div class="col">
+                        <hr class="text-white">
+                      </div> 
+                  </div>
+
+                   <div class="row mt-2">
+                      <div class="col-7">
+                          <div class="text-white">
+                            <label for="receivers_file" class="form-label">Upload receivers in .csv format. <span class="display-10">Download <a href="/downloads/receivers.csv" download>sample</a> format</span></label>
+                            <input class="form-control form-control-sm" id="receivers_file" type="file" ref="receiverUpload"  accept=".csv" @change="readFile">
+                          </div>
+                      </div>
+                  </div> 
+
+
                 </div>
                 <div class=".d-none .d-md-block .d-lg-none col-md-2"></div>
               </div>
@@ -188,35 +209,6 @@
                 <div class="row">
                   <div class="col"></div>
                   <div class="col d-flex justify-content-center">
-                    <div class="card text-center" style="width: 25rem;">
-                      <img src="@/assets/images/chainlink_logo.svg" class="mx-auto p-1 mt-3 pb-0" alt="Chainlink" style="height:30%; width:70%">
-                      <hr class="mb-0">
-                      <div class="card-body">
-                        <h2 class="card-title">Chainlink</h2>
-                        <p class="card-text">Chainlink decentralized oracle networks provide tamper-proof inputs, outputs, and computations 
-                          to support advanced smart contracts on XDC blockchain</p>
-                         <small>For more information visit <a href="https://chain.link/" target="_blank" class="card-link">chain.link</a> site</small>
-                        <hr>
-                        <figure>
-                          <blockquote class="blockquote">
-                            <h6 class="text-center">Charges</h6>
-                            <h2 class="text-center" v-if="tokenDetails['Chainlink']">{{tokenDetails['Chainlink'].fee}} {{tokenDetails['Chainlink'].symbol}} <b v-if="tokenDetails['Chainlink']"> = $ {{tokenDetails['Chainlink'].usdFee}}</b> </h2>
-                          </blockquote>
-                          <figcaption class="blockquote-footer">
-                            <cite title="Source Title">Price sourced from <a href="https://www.coingecko.com/" target="_blank"> CoinGecko</a> </cite>
-                          </figcaption>
-                        </figure>
-                        <hr>
-                          <div class="form-check d-inline-block">
-                          <input class="form-check-input" type="radio" name="nodeType" id="nodeType1" v-model="data.nodeType" value="Chainlink">
-                          <label class="form-check-label" for="nodeType1">
-                            <b>Use Chainlink</b>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col d-flex justify-content-center">
                     <div class="card text-center pt-3" style="width: 25rem;">
                       <img src="@/assets/images/goplugin_logo.png" class="mx-auto p-1" alt="Go Plugin" style="height:24%; width: 50%">
                       <hr class="mb-0">
@@ -229,11 +221,8 @@
                          <figure>
                           <blockquote class="blockquote">
                             <h6 class="text-center">Charges</h6>
-                            <h2 class="text-center" v-if="tokenDetails['Plugin']">{{tokenDetails['Plugin'].fee}} {{tokenDetails['Plugin'].symbol}} <b v-if="tokenDetails['Plugin']"> = $ {{tokenDetails['Plugin'].usdFee}}</b> </h2>
+                            <h2 class="text-center" v-if="tokenDetails['Plugin']">{{tokenDetails['Plugin'].fee}} {{tokenDetails['Plugin'].symbol}} <b v-if="tokenDetails['Plugin'] && tokenDetails['Plugin'].usdFee"> = $ {{tokenDetails['Plugin'].usdFee}}</b> </h2>
                           </blockquote>
-                          <figcaption class="blockquote-footer">
-                            <cite title="Source Title">Price sourced from <a href="https://www.coingecko.com/" target="_blank"> CoinGecko</a> </cite>
-                          </figcaption>
                         </figure>
                         <hr>
                             <div class="form-check d-inline-block">
@@ -242,6 +231,32 @@
                                 <b>Use Plugin</b>
                               </label>
                             </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col d-flex justify-content-center">
+                    <div class="card text-center" style="width: 25rem;">
+                      <img src="@/assets/images/chainlink_logo.svg" class="mx-auto p-1 mt-3 pb-0" alt="Chainlink" style="height:30%; width:70%">
+                      <hr class="mb-0">
+                      <div class="card-body">
+                        <h2 class="card-title">Chainlink</h2>
+                        <p class="card-text">Chainlink decentralized oracle networks provide tamper-proof inputs, outputs, and computations 
+                          to support advanced smart contracts on XDC blockchain</p>
+                         <small>For more information visit <a href="https://chain.link/" target="_blank" class="card-link">chain.link</a> site</small>
+                        <hr>
+                        <figure>
+                          <blockquote class="blockquote">
+                            <h6 class="text-center">Charges</h6>
+                            <h2 class="text-center" v-if="tokenDetails['Chainlink']">{{tokenDetails['Chainlink'].fee}} {{tokenDetails['Chainlink'].symbol}} <b v-if="tokenDetails['Chainlink'] && tokenDetails['Chainlink'].usdFee"> = $ {{tokenDetails['Chainlink'].usdFee}}</b> </h2>
+                          </blockquote>
+                        </figure>
+                        <hr>
+                          <div class="form-check d-inline-block">
+                          <input class="form-check-input" type="radio" name="nodeType" id="nodeType1" v-model="data.nodeType" value="Chainlink">
+                          <label class="form-check-label" for="nodeType1">
+                            <b>Use Chainlink</b>
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -283,6 +298,7 @@ import common from "@/assets/js/common";
 import ContractInfo from "./ContractInfo";
 import Base from "@/components/common/Base";
 import { DatePicker } from 'v-calendar';
+import Papa from 'papaparse';
 
 export default {
   name: "Contact",
@@ -308,8 +324,8 @@ export default {
         link: 0.1,
         duration: 0,
         smartLockAddress: "",
-        targets: [{ xdc: 0.000001, receiver: '' }],
-        nodeType: 'Chainlink'
+        targets: [{ xdc: 1, receiver: '' }],
+        nodeType: 'Plugin'
       },
       date: new Date(),
       contractDetails: {},
@@ -371,7 +387,7 @@ export default {
   computed: {
     lockedupXDC() {
       return this.data.targets.reduce((total, target) => {
-        return total + target.xdc;
+        return total + (target.xdc ? target.xdc : 0);
       }, 0);
     },
   },
@@ -396,20 +412,40 @@ export default {
      * 
      */
     async loadContract() {
-      this.data.smartLockAddress = this.$route.params.contract_address
-      if(!this.data.smartLockAddress) {
+      let smartLockAddress = this.$route.params.contract_address
+
+      let isClone = false
+      isClone = this.$route.fullPath.endsWith('/clone')
+
+      if(!smartLockAddress) {
           return
       }
+
       this.rpcInProgress = true
-      this.contractDetails = await web3Util.getContractDetails(this, this.data.address, this.data.smartLockAddress)
+      let contractDetails = await web3Util.getContractDetails(this, this.data.address, smartLockAddress)
+
+      if(isClone) {
+        let targets = []
+        for(let i=0; i<contractDetails.receivers.length; i++) {
+            targets.push({
+              xdc: parseFloat(contractDetails.funds[i]),
+              receiver: contractDetails.receivers[i]
+            })
+        }
+        this.data.targets = targets
+        this.rpcInProgress = false
+      }else {
+        this.data.smartLockAddress = smartLockAddress
+        this.contractDetails = contractDetails
+        this.progressWizard()
+      }
       
-      this.progressWizard();
     },
     /**
      * Adds new set of fields to capture receiver and correspnding XDC to transfer
      */
     addReceiver() {
-      this.data.targets.push({ xdc: 0.000001, receiver: "" });
+      this.data.targets.push({ xdc: 1, receiver: "" });
     },
     /**
      * Removes the receiver and XDC pair from  list
@@ -526,6 +562,10 @@ export default {
        * Create the new contract and wait for the confirmation i.e wait till the block is created in Block Chain
        */
       var tlw = await web3Util.createSmartLock(this, this.data);
+      if(!tlw) {
+        return
+      }
+
       this.rpcInProgress = true;
       const vm = this;
       try {
@@ -569,6 +609,33 @@ export default {
         common.notifyError('Error creating contract. Please check if receivers are valid')
       }
       
+    },
+
+    readFile() {
+        let file = this.$refs.receiverUpload.files[0];
+        let vm = this
+        Papa.parse(file, {
+          delimiter: ',',
+          header: true,
+          complete: function(results) {
+              vm.rpcInProgress = true
+              try {
+                  let targets = []
+                  for(let receiver of results.data) {
+                    targets.push({
+                        xdc: parseFloat(receiver.xdc),
+                        receiver: receiver.receiver
+                      })
+                  }
+                  vm.data.targets = targets
+                  vm.rpcInProgress = false
+              }catch(err) {
+                  console.log(err)
+                  common.notifyError('Invalid receivers format')
+              }
+              
+          }
+        })
     },
 
     formatAddress() {

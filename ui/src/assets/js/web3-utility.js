@@ -37,37 +37,6 @@ async function getBalance(vm, addr, format) {
   }
 }
 
-
-/**
- * Retrieves the token balances for the supported node types. Refer assests/js/common.js -> SUPPORTED_NODE_TYPES for more info
- * 
- * @param {*} vm - Component with web3 instance
- * @param {*} addr - Address to get the token balances
- * 
- * @returns - Token Balance and corresponding symbols 
- */
-async function getTokenBalance(vm, addr) {
-  let tokenBalances = {}
-  try {
-    for(const nodeType of common.SUPPORTED_NODE_TYPES) {
-        let config = getNetworkConfig(nodeType, vm.networkId)
-        let tokenContract = await new vm.$web3js.eth.Contract(config.TOKEN_ABI, config.TOKEN_CONTRACT_ADDR)
-        let balance = await tokenContract.methods.balanceOf(addr).call()
-        balance = balance / (10**config.DECIMALS)
-        tokenBalances[nodeType] = {
-          balance: balance,
-          symbol: config.SYMBOL
-        }
-    }
-  }
-  catch(err) {
-    console.log(err)
-    vm.rpcInProgress = false
-    common.notifyError('Error fetching token balances')
-  }
-  return tokenBalances
-}
-
 /**
  * Method to prepare and retrieve XDC Smart Lock factory's newTimeLockedContract method instance
  * 
@@ -96,7 +65,13 @@ async function createSmartLock(vm, config) {
   }catch(err) {
     console.log(err)
     vm.rpcInProgress = false
-    common.notifyError('Error processing request')
+    
+    if(common.isApothem(vm.networkId)) {
+      common.notifyError('Beta version of the application supports only Apothem network')    
+    }else {
+      common.notifyError('Error processing request')
+    }
+    
   }
 }
 
@@ -132,6 +107,28 @@ async function transferToken(vm, config, tokenDetails) {
     const conf = await smartLockConfig.methods.getConfig(config.nodeType).call()
     const tokenContract = await new vm.$web3js.eth.Contract(networkConfig.TOKEN_ABI, conf[1]);
     return await tokenContract.methods.transferAndCall(config.smartLockAddress, tokenDetails[config.nodeType].feeInt+'', vm.$web3js.utils.asciiToHex(config.nodeType));
+  }catch(err) {
+    console.log(err)
+    vm.rpcInProgress = false
+    common.notifyError('Error processing request')
+  }
+}
+
+
+/**
+ * 
+ * Method to transfer test LINK/PLI tokens to the user. This function is applicable only for Apothem network
+ * 
+ * @param {*} vm - Component with web3 instance
+ * @param {*} config - XDC Smart Lock contract address, LINK token value
+ * 
+ * @returns - Execution status 
+ */
+ async function transferTestTokens(vm, tokenType) {
+  try {
+    const networkConfig = getNetworkConfig(vm.networkId)
+    const tokenContract = await new vm.$web3js.eth.Contract(networkConfig.FAUCET_CONTRACT_ABI, networkConfig[tokenType.toUpperCase()+'_TOKEN_FAUCET_ADDRESS']);
+    return await tokenContract.methods.transfer();
   }catch(err) {
     console.log(err)
     vm.rpcInProgress = false
@@ -193,8 +190,9 @@ async function getTotalSmartLocks(vm, addr) {
 
   }catch(err) {
     console.log(err)
-    vm.rpcInProgress = false
-    common.notifyError('Error processing request')
+    return 0
+    // vm.rpcInProgress = false
+    // common.notifyError('Error processing request')
   }
 }
 
@@ -315,7 +313,7 @@ export default {
   waitForReceipt,
   getContractDetails,
   withdrawConract,
-  getTokenBalance,
   getUserRecentSmartLock,
-  getTotalSmartLocks
+  getTotalSmartLocks,
+  transferTestTokens
 }

@@ -5,7 +5,10 @@
             <div class="col-md-6 col-sm-12  text-center">
                 <h6 class="fs-4 mb-3 mt-3">XDC Smart Lock</h6>
                 <div class="mb-3" style="color: #e1f2ff">
-                    <a href="/contract" class="btn btn-primary"><i class="bi bi-menu-up"></i> Create Smart Lock </a> 
+                    <a href="/contract" class="btn btn-primary" v-if="isApothem"><i class="bi bi-menu-up"></i> Create Smart Lock </a> 
+                    <a v-else>
+                        <p>Beta version can be tested only on Apothem Network. <br> Select <b>Apothem network</b> in XDCPay wallet</p>
+                    </a>
                 </div>
             </div>
             <div class="col-md-3 col-sm-12"></div>
@@ -41,6 +44,7 @@
  */
 import Loading from 'vue-loading-overlay';
 import Base from '@/components/common/Base'
+import common from "@/assets/js/common";
 
 export default {
     name: 'Home',
@@ -61,7 +65,12 @@ export default {
      */
     components: {
         Loading
-    }
+    },
+    computed: {
+        isApothem() {
+            return common.isApothem(this.networkId)
+        }
+    },
 }
 
 </script>

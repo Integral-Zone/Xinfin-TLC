@@ -33,11 +33,17 @@ const app = createApp(App)
  */
 app.use(router)
 
-app.mount('#app')
-
 if (window.ethereum) {
     app.config.globalProperties.$web3js = new Web3(window.ethereum);
     window.ethereum.enable();
+
+    // Event not propagated from XDCPay yet. 
+    // window.ethereum.on('chainChanged', function(networkId){
+    //     console.log('chainChanged',networkId);
+    // });
 }
+
+app.mount('#app')
+
 
 app.config.globalProperties.$loaderColor = LOADER_COLOR;
